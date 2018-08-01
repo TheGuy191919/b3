@@ -4,7 +4,7 @@
   "description": "React frontend for b3",
   "private": true,
   "scripts": {
-    "start": "webpack-dev-server --mode development --open",
+    "start": "webpack-dev-server --mode development --port 8081 --open",
     "build": "webpack --mode production",
     "watch": "webpack --watch -d"
   },
