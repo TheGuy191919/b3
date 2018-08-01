@@ -1,35 +1,59 @@
 var path = require('path');
 
 var node_dir = __dirname + '/node_modules';
+const HtmlWebPackPlugin = require("html-webpack-plugin");
 
 module.exports = {
     entry: './src/main/js/index.js',
     devtool: 'sourcemaps',
     cache: true,
-    debug: true,
     output: {
         path: __dirname,
         filename: './src/main/resources/static/built/bundle.js'
     },
     module: {
-        loaders: [
-            {
-            	test: /.jsx?$/,
-                exclude: /(node_modules)/,
-                loader: 'babel-loader',
-                query: {
-                    cacheDirectory: true,
-                    presets: ['es2015', 'react']
+        rules: [
+          {
+            test: /\.js$/,
+            exclude: /node_modules/,
+            use: {
+              loader: "babel-loader",
+                    options: {
+                      presets: ["env", "react"]
+                    }
+            }
+          },
+          {
+            test: /\.css$/,
+            use: [
+              {
+                loader: "style-loader"
+              },
+              {
+                loader: "css-loader",
+                options: {
+                  modules: true,
+                  importLoaders: 1,
+                  localIdentName: "[name]_[local]_[hash:base64]",
+                  sourceMap: true,
+                  minimize: true
                 }
-            }, {
-                test: /\.css$/,
-                exclude: /(node_modules)/,
-                loader: 'style-loader!css-loader'
-            }, {
-                test: /\.svg$/,
-                exclude: /(node_modules)/,
+              }
+            ]
+          },
+          {
+            test: /\.svg$/,
+            exclude: /(node_modules)/,
+            use: {
                 loader: 'svg-loader'
             }
+          }
         ]
-    }
+    },
+    plugins: [
+        new HtmlWebPackPlugin({
+        template: "./src/main/resources/static/html/index.html",
+        filename: "./index.html"
+      })
+    ]
 };
