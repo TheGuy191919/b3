@@ -24,7 +24,6 @@ public class User {
     private String password;
     @Column(unique = true)
     private String handle;
-
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -37,6 +36,10 @@ public class User {
             )
     )
     private Collection<Event> events;
+    @OneToMany(mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private Collection<Payment> payments;
 
     @JsonIgnore
     private String token;
