@@ -22,14 +22,14 @@ public class Event {
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     private Collection<Item> items;
-    @OneToOne(mappedBy = "event",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
-    private Tax tax;
-    @OneToOne(mappedBy = "event",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
-    private Tip tip;
+//    @OneToOne(mappedBy = "event",
+//            cascade = CascadeType.ALL,
+//            orphanRemoval = true)
+    private int tax;
+//    @OneToOne(mappedBy = "event",
+//            cascade = CascadeType.ALL,
+//            orphanRemoval = true)
+    private int tip;
     @OneToMany(mappedBy = "event",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
