@@ -20,4 +20,36 @@ public class Item {
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     private Collection<Split> splits;
+
+    public int getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(int itemId) {
+        this.itemId = itemId;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
+    }
+
+    public Collection<Split> getSplits() {
+        return splits;
+    }
+
+    public void setSplits(Collection<Split> splits) {
+        this.splits = splits;
+    }
 }

@@ -34,4 +34,68 @@ public class Event {
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     private Collection<Payer> payers;
+
+    public int getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(int eventId) {
+        this.eventId = eventId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Date getCreatTime() {
+        return creatTime;
+    }
+
+    public void setCreatTime(Date creatTime) {
+        this.creatTime = creatTime;
+    }
+
+    public Collection<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Collection<User> users) {
+        this.users = users;
+    }
+
+    public Collection<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(Collection<Item> items) {
+        this.items = items;
+    }
+
+    public int getTax() {
+        return tax;
+    }
+
+    public void setTax(int tax) {
+        this.tax = tax;
+    }
+
+    public int getTip() {
+        return tip;
+    }
+
+    public void setTip(int tip) {
+        this.tip = tip;
+    }
+
+    public Collection<Payer> getPayers() {
+        return payers;
+    }
+
+    public void setPayers(Collection<Payer> payers) {
+        this.payers = payers;
+    }
 }

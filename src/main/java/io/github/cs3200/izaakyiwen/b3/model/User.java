@@ -36,10 +36,14 @@ public class User {
             )
     )
     private Collection<Event> events;
-    @OneToMany(mappedBy = "user",
+    @OneToMany(mappedBy = "payerUser",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
-    private Collection<Payment> payments;
+    private Collection<Payment> paymentsFrom;
+    @OneToMany(mappedBy = "payeeUser",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private Collection<Payment> paymentsTo;
 
     @JsonIgnore
     private String token;
@@ -52,7 +56,7 @@ public class User {
      * @return True if password matches that is stored in database.
      */
     private boolean checkPassword(String plainPassword) {
-        return BCrypt.checkpw(plainPassword, this.password);
+        return BCrypt.checkpw(plainPassword, this.getPassword());
     }
 
     /**
@@ -66,7 +70,7 @@ public class User {
     public String getToken(String plainPassword) throws IllegalAccessException {
         if (this.checkPassword(plainPassword)) {
             this.updateTokenExpiration(600000);
-            return this.token;
+            return this.getToken();
         }
         throw new IllegalAccessException("Do not have permission to access token");
     }
@@ -78,9 +82,9 @@ public class User {
      */
     private void updateTokenExpiration(long time) {
         if (this.isTokenExpired()) {
-            this.token = UUID.randomUUID().toString();
+            this.setToken(UUID.randomUUID().toString());
         }
-        this.tokenExpiration = new Date().getTime() + time;
+        this.setTokenExpiration(new Date().getTime() + time);
     }
 
     /**
@@ -89,7 +93,7 @@ public class User {
      * @return true if current token is expired.
      */
     private boolean isTokenExpired() {
-        return new Date().after(new Date(this.tokenExpiration));
+        return new Date().after(new Date(this.getTokenExpiration()));
     }
 
     /**
@@ -97,7 +101,7 @@ public class User {
      */
     public void setTokenExpired() {
         if (!isTokenExpired()) {
-            this.tokenExpiration = 0;
+            this.setTokenExpiration(0);
         }
     }
 
@@ -109,11 +113,90 @@ public class User {
      * @return true if given token is right and not expired.
      */
     public boolean validToken(String token) {
-        if (!this.isTokenExpired() && this.token.equals(token)) {
+        if (!this.isTokenExpired() && this.getToken().equals(token)) {
             this.updateTokenExpiration(600000);
             return true;
         }
         return false;
     }
 
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getHandle() {
+        return handle;
+    }
+
+    public void setHandle(String handle) {
+        this.handle = handle;
+    }
+
+    public Collection<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(Collection<Event> events) {
+        this.events = events;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public long getTokenExpiration() {
+        return tokenExpiration;
+    }
+
+    public void setTokenExpiration(long tokenExpiration) {
+        this.tokenExpiration = tokenExpiration;
+    }
+
+    public Collection<Payment> getPaymentsFrom() {
+        return paymentsFrom;
+    }
+
+    public void setPaymentsFrom(Collection<Payment> paymentsFrom) {
+        this.paymentsFrom = paymentsFrom;
+    }
+
+    public Collection<Payment> getPaymentsTo() {
+        return paymentsTo;
+    }
+
+    public void setPaymentsTo(Collection<Payment> paymentsTo) {
+        this.paymentsTo = paymentsTo;
+    }
 }
