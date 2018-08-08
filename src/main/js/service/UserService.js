@@ -1,4 +1,4 @@
-class UserService {
+export default class UserService {
 
     static myInstance = null;
 
@@ -12,7 +12,8 @@ class UserService {
     constructor() {
         this.token = null;
         this.remotehost = "";
-        if (window.location.port === "3000") {
+        if (window.location.port === "3000" ||
+            window.location.port === "8081") {
             this.remotehost = "http://localhost:8080";
         }
     }
@@ -35,5 +36,15 @@ class UserService {
             },
             body: JSON.stringify(user)
         });
+    }
+
+    currentUser() {
+        if (this.token === null) {
+            return new Promise(function(resolve, reject) {
+                resolve(null);
+            });
+        }
+        return fetch("/api/" + this.token + "/user?token=" + this.token)
+               .then(res => res.json());
     }
 }
