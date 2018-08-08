@@ -9,7 +9,11 @@ module.exports = {
     cache: true,
     output: {
         path: __dirname,
-        filename: './src/main/resources/static/built/bundle.js'
+        filename: './src/main/resources/static/built/bundle.js',
+        publicPath: '/'
+    },
+    devServer: {
+      historyApiFallback: true
     },
     module: {
         rules: [{
@@ -18,7 +22,8 @@ module.exports = {
                 use: {
                     loader: "babel-loader",
                     options: {
-                        presets: ["env", "react"]
+                        presets: ["env", "react"],
+                        plugins: ["transform-class-properties"]
                     }
                 }
             },
@@ -52,6 +57,7 @@ module.exports = {
         new HtmlWebPackPlugin({
             template: "./src/main/resources/static/html/index.html",
             filename: "./index.html"
-        })
+        }),
+
     ]
 };
