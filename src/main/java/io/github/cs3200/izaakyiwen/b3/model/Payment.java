@@ -12,10 +12,10 @@ public class Payment {
     private Date lastEditTime;
     private int amount;
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    //@JoinColumn(name = "user_id")
     private User payerUser;
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    //@JoinColumn(name = "user_id")
     private User payeeUser;
 
     public int getPaymentId() {
