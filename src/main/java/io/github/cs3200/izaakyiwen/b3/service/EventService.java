@@ -25,7 +25,7 @@ public class EventService {
     @PostMapping("/api/{token}/event")
     public ResponseEntity<Event> insertEvent(@PathVariable String token, @RequestBody Event event) {
         User dbUser = this.userRepository.findUserByToken(token);
-        if (dbUser != null && dbUser.validToken(token)) {
+        if (dbUser != null && dbUser.validToken(token, this.userRepository)) {
             event.getUsers().add(this.userRepository.findUserByToken(token));
             event.setCreatTime(new Date());
             return ResponseEntity.ok(this.eventRepository.save(event));
@@ -39,7 +39,7 @@ public class EventService {
         if (dbEvent.isPresent()) {
             Event event = dbEvent.get();
             for (User user : event.getUsers()) {
-                if (user.validToken(token)) {
+                if (user.validToken(token, this.userRepository)) {
                     return ResponseEntity.ok(event);
                 }
             }
@@ -53,7 +53,7 @@ public class EventService {
         if (optionalEvent.isPresent()) {
             Event dbEvent = optionalEvent.get();
             for (User user : dbEvent.getUsers()) {
-                if (user.validToken(token)) {
+                if (user.validToken(token, this.userRepository)) {
                     event.setEventId(dbEvent.getEventId());
                     event.setCreatTime(dbEvent.getCreatTime());
                     return ResponseEntity.ok(this.eventRepository.save(event));
@@ -69,7 +69,7 @@ public class EventService {
         if (optionalEvent.isPresent()) {
             Event dbEvent = optionalEvent.get();
             for (User user : dbEvent.getUsers()) {
-                if (user.validToken(token)) {
+                if (user.validToken(token, this.userRepository)) {
                     this.eventRepository.delete(dbEvent);
                     return;
                 }

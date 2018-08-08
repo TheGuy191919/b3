@@ -22,6 +22,8 @@ public class ItemService {
     EventRepository eventRepository;
     @Autowired
     ItemRepository itemRepository;
+    @Autowired
+    UserRepository userRepository;
 
     @PostMapping("/api/{token}/event/{eventId}/item")
     public ResponseEntity<Item> insertItem(@PathVariable String token, @PathVariable int eventId, @RequestBody Item item) {
@@ -29,7 +31,7 @@ public class ItemService {
         if (dbEvent.isPresent()) {
             Event event = dbEvent.get();
             for (User user : event.getUsers()) {
-                if (user.validToken(token)) {
+                if (user.validToken(token, this.userRepository)) {
                     item.setEvent(event);
                     return ResponseEntity.ok(this.itemRepository.save(item));
                 }
@@ -44,7 +46,7 @@ public class ItemService {
         if (optionalItem.isPresent()) {
             Item dbItem = optionalItem.get();
             for (User user : dbItem.getEvent().getUsers()) {
-                if (user.validToken(token)) {
+                if (user.validToken(token, this.userRepository)) {
                     return ResponseEntity.ok(dbItem);
                 }
             }
@@ -58,7 +60,7 @@ public class ItemService {
         if (optionalItem.isPresent()) {
             Item dbItem = optionalItem.get();
             for (User user : dbItem.getEvent().getUsers()) {
-                if (user.validToken(token)) {
+                if (user.validToken(token, this.userRepository)) {
                     item.setItemId(dbItem.getItemId());
                     item.setEvent(dbItem.getEvent());
                     return ResponseEntity.ok(this.itemRepository.save(item));
@@ -74,7 +76,7 @@ public class ItemService {
         if (optionalItem.isPresent()) {
             Item dbItem = optionalItem.get();
             for (User user : dbItem.getEvent().getUsers()) {
-                if (user.validToken(token)) {
+                if (user.validToken(token, this.userRepository)) {
                     this.itemRepository.delete(dbItem);
                     return;
                 }

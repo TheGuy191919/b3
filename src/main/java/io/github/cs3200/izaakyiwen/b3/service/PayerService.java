@@ -5,6 +5,7 @@ import io.github.cs3200.izaakyiwen.b3.model.Payer;
 import io.github.cs3200.izaakyiwen.b3.model.User;
 import io.github.cs3200.izaakyiwen.b3.repository.EventRepository;
 import io.github.cs3200.izaakyiwen.b3.repository.PayerRepository;
+import io.github.cs3200.izaakyiwen.b3.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,8 @@ public class PayerService {
     EventRepository eventRepository;
     @Autowired
     PayerRepository payerRepository;
+    @Autowired
+    UserRepository userRepository;
 
     @PostMapping("/api/{token}/event/{eventId}/payer")
     public ResponseEntity<Payer> insertPayer(@PathVariable String token, @PathVariable int eventId, @RequestBody Payer payer) {
@@ -27,7 +30,7 @@ public class PayerService {
         if (dbEvent.isPresent()) {
             Event event = dbEvent.get();
             for (User user : event.getUsers()) {
-                if (user.validToken(token)) {
+                if (user.validToken(token, this.userRepository)) {
                     payer.setEvent(event);
                     payer.setUser(user);
                     return ResponseEntity.ok(this.payerRepository.save(payer));
@@ -43,7 +46,7 @@ public class PayerService {
         if (optionalPayer.isPresent()) {
             Payer dbPayer = optionalPayer.get();
             for (User user : dbPayer.getEvent().getUsers()) {
-                if (user.validToken(token)) {
+                if (user.validToken(token, this.userRepository)) {
                     return ResponseEntity.ok(dbPayer);
                 }
             }
@@ -57,7 +60,7 @@ public class PayerService {
         if (optionalPayer.isPresent()) {
             Payer dbPayer = optionalPayer.get();
             for (User user : dbPayer.getEvent().getUsers()) {
-                if (user.validToken(token)) {
+                if (user.validToken(token, this.userRepository)) {
                     payer.setPayerId(dbPayer.getPayerId());
                     payer.setUser(dbPayer.getUser());
                     payer.setEvent(dbPayer.getEvent());
@@ -74,7 +77,7 @@ public class PayerService {
         if (optionalPayer.isPresent()) {
             Payer dbPayer = optionalPayer.get();
             for (User user : dbPayer.getEvent().getUsers()) {
-                if (user.validToken(token)) {
+                if (user.validToken(token, this.userRepository)) {
                     this.payerRepository.delete(dbPayer);
                     return;
                 }

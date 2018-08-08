@@ -1,6 +1,7 @@
 package io.github.cs3200.izaakyiwen.b3.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.github.cs3200.izaakyiwen.b3.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import javax.persistence.*;
@@ -67,9 +68,10 @@ public class User {
      * @return token to access the user.
      * @throws IllegalAccessException If the password is wrong or user is disabled.
      */
-    public String getToken(String plainPassword) throws IllegalAccessException {
+    public String getToken(String plainPassword, UserRepository userRepository) throws IllegalAccessException {
         if (this.checkPassword(plainPassword)) {
             this.updateTokenExpiration(600000);
+            userRepository.save(this);
             return this.getToken();
         }
         throw new IllegalAccessException("Do not have permission to access token");
@@ -112,9 +114,10 @@ public class User {
      * @param token String to check if it is a valid token.
      * @return true if given token is right and not expired.
      */
-    public boolean validToken(String token) {
+    public boolean validToken(String token, UserRepository userRepository) {
         if (!this.isTokenExpired() && this.getToken().equals(token)) {
             this.updateTokenExpiration(600000);
+            userRepository.save(this);
             return true;
         }
         return false;

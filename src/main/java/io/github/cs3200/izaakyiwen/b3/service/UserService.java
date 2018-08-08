@@ -25,8 +25,11 @@ public class UserService {
         String plainPassword = user.getPassword();
         user.setPassword(BCrypt.hashpw(plainPassword, BCrypt.gensalt()));
         try {
-            return ResponseEntity.ok(userRepository.save(user).getToken(plainPassword));
-        } catch (IllegalAccessException e) {
+            user = userRepository.save(user);
+            String token = user.getToken(plainPassword, this.userRepository);
+            userRepository.save(user);
+            return ResponseEntity.ok(token);
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
@@ -54,11 +57,11 @@ public class UserService {
     @PutMapping("/api/{token}/user/{userId}")
     public ResponseEntity<User> updateUser(@PathVariable Integer userId, @PathVariable String token, @RequestBody User user) {
         Optional<User> oldUser = userRepository.findById(userId);
-        if (oldUser.isPresent() && oldUser.get().validToken(token)) {
+        if (oldUser.isPresent() && oldUser.get().validToken(token, this.userRepository)) {
             User dbUser = oldUser.get();
             dbUser.setEmail(user.getEmail());
             dbUser.setName(user.getName());
-            return ResponseEntity.ok(userRepository.save(user));
+            return ResponseEntity.ok(userRepository.save(dbUser));
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
@@ -66,7 +69,7 @@ public class UserService {
     @DeleteMapping("/api/{token}/user/{userId}")
     public void deleteUser(@PathVariable Integer userId, @PathVariable String token) {
         Optional<User> oldUser = userRepository.findById(userId);
-        if (oldUser.isPresent() && oldUser.get().validToken(token)) {
+        if (oldUser.isPresent() && oldUser.get().validToken(token, this.userRepository)) {
             userRepository.deleteById(userId);
         }
     }
@@ -94,8 +97,10 @@ public class UserService {
         User dbUser = this.userRepository.findUserByHandle(user.getHandle());
         if (dbUser != null) {
             try {
-                return ResponseEntity.ok(dbUser.getToken(user.getPassword()));
-            } catch (IllegalAccessException e) {
+                String token = dbUser.getToken(user.getPassword(), this.userRepository);
+                userRepository.save(dbUser);
+                return ResponseEntity.ok(token);
+            } catch (Exception e) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
             }
         }
@@ -108,15 +113,11 @@ public class UserService {
     }
 
     @PostMapping("/api/{token}/user/logout")
-    public ResponseEntity<String> logout(@RequestBody User user) {
+    public void logout(@RequestBody User user) {
         Optional<User> dbUser = this.userRepository.findById(user.getUserId());
         if (dbUser.isPresent()) {
-            try {
-                return ResponseEntity.ok(dbUser.get().getToken(user.getPassword()));
-            } catch (IllegalAccessException e) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-            }
+            dbUser.get().setTokenExpired();
+            this.userRepository.save(dbUser.get());
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 }

@@ -11,6 +11,7 @@ export default class UserService {
 
     constructor() {
         this.token = null;
+        this.tokenDate = null;
         this.remotehost = "";
         if (window.location.port === "3000" ||
             window.location.port === "8081") {
@@ -19,32 +20,70 @@ export default class UserService {
     }
 
     register(user) {
-        return fetch("/api/user", {
+        return fetch(this.remotehost + "/api/user", {
             method: 'post',
             headers: {
               'content-type': 'application/json'
             },
             body: JSON.stringify(user)
+        })
+        .then(res => res.text())
+        .then(token => {
+            if (token === null || token === "") {
+                return null;
+            }
+            this.token = token;
+            this.tokenDate = new Date();
+            return token;
         });
     }
 
     login(user) {
-        return fetch("/api/user/login", {
+        return fetch(this.remotehost + "/api/user/login", {
             method: 'post',
             headers: {
               'content-type': 'application/json'
             },
             body: JSON.stringify(user)
+        })
+        .then(res => res.text())
+        .then(token => {
+            if (token === null || token === "") {
+                return null;
+            }
+            this.token = token;
+            this.tokenDate = new Date();
+            return token;
         });
     }
 
-    currentUser() {
-        if (this.token === null) {
+    validToken() {
+        return this.token !== null;
+    }
+
+    updateUser(user) {
+        if (!this.validToken()) {
             return new Promise(function(resolve, reject) {
                 resolve(null);
             });
         }
-        return fetch("/api/" + this.token + "/user?token=" + this.token)
+        return fetch(this.remotehost + "/api/" + this.token + "/user/" + user.userId, {
+            method: 'put',
+            headers: {
+              'content-type': 'application/json'
+            },
+            body: JSON.stringify(user)
+        })
+        .then(res => res.json());
+    }
+
+    currentUser() {
+        if (!this.validToken()) {
+            return new Promise(function(resolve, reject) {
+                resolve(null);
+            });
+        }
+        return fetch(this.remotehost + "/api/" + this.token + "/user?token=" + this.token)
                .then(res => res.json());
     }
 }

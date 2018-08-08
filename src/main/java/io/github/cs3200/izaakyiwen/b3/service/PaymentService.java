@@ -24,7 +24,7 @@ public class PaymentService {
     @PostMapping("/api/{token}/payment")
     public ResponseEntity<Payment> insertPayment(@PathVariable String token, @RequestBody Payment payment) {
         User dbUser = this.userRepository.findUserByToken(token);
-        if (dbUser != null && dbUser.validToken(token)) {
+        if (dbUser != null && dbUser.validToken(token, this.userRepository)) {
             payment.setPayerUser(dbUser);
             payment.setLastEditTime(new Date());
             return ResponseEntity.ok(this.paymentRepository.save(payment));
@@ -37,8 +37,8 @@ public class PaymentService {
         Optional<Payment> dbPayment = this.paymentRepository.findById(paymentId);
         if (dbPayment.isPresent()) {
             Payment payment = dbPayment.get();
-            if (payment.getPayeeUser().validToken(token) ||
-                    payment.getPayerUser().validToken(token)) {
+            if (payment.getPayeeUser().validToken(token, this.userRepository) ||
+                    payment.getPayerUser().validToken(token, this.userRepository)) {
                 return ResponseEntity.ok(payment);
             }
         }
@@ -50,7 +50,7 @@ public class PaymentService {
         Optional<Payment> optionalPayment = this.paymentRepository.findById(paymentId);
         if (optionalPayment.isPresent()) {
             Payment dbPayment = optionalPayment.get();
-            if (dbPayment.getPayerUser().validToken(token)) {
+            if (dbPayment.getPayerUser().validToken(token, this.userRepository)) {
                 payment.setPaymentId(dbPayment.getPaymentId());
                 payment.setLastEditTime(new Date());
                 return ResponseEntity.ok(this.paymentRepository.save(payment));
@@ -64,7 +64,7 @@ public class PaymentService {
         Optional<Payment> optionalPayment = this.paymentRepository.findById(paymentId);
         if (optionalPayment.isPresent()) {
             Payment dbPayment = optionalPayment.get();
-            if (dbPayment.getPayerUser().validToken(token)) {
+            if (dbPayment.getPayerUser().validToken(token, this.userRepository)) {
                 this.paymentRepository.delete(dbPayment);
                 return;
             }
