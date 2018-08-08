@@ -21,12 +21,17 @@ public class UserService {
     UserRepository userRepository;
 
     @PostMapping("/api/user")
-    public User createUser(@RequestBody User user) {
-        user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
-        return userRepository.save(user);
+    public ResponseEntity<String> createUser(@RequestBody User user) {
+        String plainPassword = user.getPassword();
+        user.setPassword(BCrypt.hashpw(plainPassword, BCrypt.gensalt()));
+        try {
+            return ResponseEntity.ok(userRepository.save(user).getToken(plainPassword));
+        } catch (IllegalAccessException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
     @PostMapping("/api/{token}/user")
-    public User createUserToken(@RequestBody User user) {
+    public ResponseEntity<String> createUserToken(@RequestBody User user) {
         return this.createUser(user);
     }
 
