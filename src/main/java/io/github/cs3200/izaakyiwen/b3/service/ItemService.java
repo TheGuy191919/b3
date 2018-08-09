@@ -63,6 +63,7 @@ public class ItemService {
                 if (user.validToken(token, this.userRepository)) {
                     item.setItemId(dbItem.getItemId());
                     item.setEvent(dbItem.getEvent());
+                    item.setSplits(dbItem.getSplits());
                     return ResponseEntity.ok(this.itemRepository.save(item));
                 }
             }

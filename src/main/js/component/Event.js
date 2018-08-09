@@ -19,12 +19,22 @@ export default class extends React.Component{
         this.timeoutId = null;
 
         this.getEvent = this.getEvent.bind(this);
+        this.putEvent = this.putEvent.bind(this);
+        //this.updateEvent = this.updateEvent.bind(this);
     }
 
     componentDidMount() {
         this.getEvent(this.props.match.params['eventId']);
     }
+/*
+    componentDidUpdate(prevProps, prevState) {
+        this.updateEvent();
+    }
 
+    componentWillUnmount() {
+        this.putEvent();
+    }
+*/
     getEvent(eventId) {
         EventService.getInstance().getEvent(eventId)
         .then(event => {
@@ -37,28 +47,26 @@ export default class extends React.Component{
             });
         });
     }
-
+/*
     updateEvent() {
-        this.setState((prevState, props) => {
-            prevState.event = event;
-            prevState.status = "pending";
-            return prevState;
-        });
+        if (this.state.status === "saved") {
+            return;
+        }
 
         if (this.timeoutId) {
             window.clearTimeout(this.timeoutId);
-            this.timeoutId = window.setTimeout(() => {
-                EventService.getInstance().putEvent(this.state.event).then((event) => {
-                    this.setState((prevState, props) => {
-                        prevState.event = event;
-                        prevState.status = "saved";
-                        return prevState;
-                    });
-
-                });
-            });
         }
-
+        this.timeoutId = window.setTimeout(this.putEvent, 200);
+    }
+*/
+    putEvent() {
+        EventService.getInstance().putEvent(this.state.event).then((event) => {
+            this.setState((prevState, props) => {
+                prevState.event = event;
+                prevState.status = "saved";
+                return prevState;
+            });
+        });
     }
 
     render() {
@@ -100,7 +108,7 @@ export default class extends React.Component{
                 </div>
                 <div id="collapseOne" className="collapse" aria-labelledby="headingOne" data-parent="#accordion">
                   <div className="card-body">
-                    <MemberList parent={this} />
+                    <MemberList parent={this} memberList={this.state.event.users}/>
                   </div>
                 </div>
               </div>

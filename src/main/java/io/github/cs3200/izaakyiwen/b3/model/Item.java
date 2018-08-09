@@ -1,6 +1,6 @@
 package io.github.cs3200.izaakyiwen.b3.model;
 
-import net.minidev.json.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -11,6 +11,7 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "item_id")
     private int itemId;
+    private String name;
     private int price;
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -51,5 +52,13 @@ public class Item {
 
     public void setSplits(Collection<Split> splits) {
         this.splits = splits;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

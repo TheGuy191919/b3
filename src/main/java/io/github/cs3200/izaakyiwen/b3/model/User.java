@@ -26,21 +26,14 @@ public class User {
     @Column(unique = true)
     private String handle;
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "user_attend_event",
-            joinColumns = @JoinColumn(
-                    name = "user_id", referencedColumnName = "user_id"
-            ),
-            inverseJoinColumns = @JoinColumn(
-                    name = "event_id", referencedColumnName = "event_id"
-            )
-    )
+    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
     private Collection<Event> events;
+    @JsonIgnore
     @OneToMany(mappedBy = "payerUser",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     private Collection<Payment> paymentsFrom;
+    @JsonIgnore
     @OneToMany(mappedBy = "payeeUser",
             cascade = CascadeType.ALL,
             orphanRemoval = true)

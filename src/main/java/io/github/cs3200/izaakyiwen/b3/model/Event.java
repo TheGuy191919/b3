@@ -13,20 +13,23 @@ public class Event {
     private String name;
     private Date createTime;
 
-    @ManyToMany(mappedBy = "events", fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_attend_event",
+            joinColumns = @JoinColumn(
+                    name = "event_id", referencedColumnName = "event_id"
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "user_id", referencedColumnName = "user_id"
+            )
+    )
+    @ManyToMany(fetch = FetchType.LAZY)
     private Collection<User> users;
 
     @OneToMany(mappedBy = "event",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     private Collection<Item> items;
-//    @OneToOne(mappedBy = "event",
-//            cascade = CascadeType.ALL,
-//            orphanRemoval = true)
     private int tax;
-//    @OneToOne(mappedBy = "event",
-//            cascade = CascadeType.ALL,
-//            orphanRemoval = true)
     private int tip;
     @OneToMany(mappedBy = "event",
             cascade = CascadeType.ALL,

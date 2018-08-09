@@ -1,6 +1,6 @@
 package io.github.cs3200.izaakyiwen.b3.model;
 
-import net.minidev.json.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 

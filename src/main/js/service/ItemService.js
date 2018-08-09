@@ -1,12 +1,12 @@
 import UserService from '../service/UserService';
 
-export default class EventService {
+export default class ItemService {
 
     static myInstance = null;
 
     static getInstance() {
-        if (EventService.myInstance == null) {
-            EventService.myInstance = new EventService();
+        if (ItemService.myInstance == null) {
+            ItemService.myInstance = new ItemService();
         }
         return this.myInstance;
     }
@@ -19,86 +19,60 @@ export default class EventService {
         }
     }
 
-    createEvent(event) {
+    createItem(eventId, item) {
         if (!UserService.getInstance().validToken()) {
             return new Promise(function(resolve, reject) {
                 resolve(null);
             });
         }
         let token = UserService.getInstance().token;
-        return fetch(this.remotehost + "/api/" + token + "/event", {
+        return fetch(this.remotehost + "/api/" + token + "/event/" + eventId + "/item", {
             method: 'post',
             headers: {
               'content-type': 'application/json'
             },
-            body: JSON.stringify(event)
+            body: JSON.stringify(item)
         })
         .then(res => res.json());
     }
 
-    deleteEvent(eventId) {
+    deleteItem(itemId) {
         if (!UserService.getInstance().validToken()) {
             return new Promise(function(resolve, reject) {
                 resolve(null);
             });
         }
         let token = UserService.getInstance().token;
-        return fetch(this.remotehost + "/api/" + token + "/event/" + eventId,{
+        return fetch(this.remotehost + "/api/" + token + "/item/" + itemId,{
             method: 'DELETE'
         }).then(res => res.json());
     }
 
-    putEvent(event) {
+    putItem(item) {
         if (!UserService.getInstance().validToken()) {
             return new Promise(function(resolve, reject) {
                 resolve(null);
             });
         }
         let token = UserService.getInstance().token;
-        return fetch(this.remotehost + "/api/" + token + "/event/" + event.eventId, {
+        return fetch(this.remotehost + "/api/" + token + "/item/" + item.itemId, {
             method: 'put',
             headers: {
               'content-type': 'application/json'
             },
-            body: JSON.stringify(event)
+            body: JSON.stringify(item)
         })
         .then(res => res.json());
     }
 
-    getEvent(eventId) {
+    getItem(itemId) {
         if (!UserService.getInstance().validToken()) {
             return new Promise(function(resolve, reject) {
                 resolve(null);
             });
         }
         let token = UserService.getInstance().token;
-        return fetch(this.remotehost + "/api/" + token + "/event/" + eventId)
+        return fetch(this.remotehost + "/api/" + token + "/item/" + itemId)
                .then(res => res.json());
-    }
-
-    addUserTOEvent(eventId, userId) {
-        if (!UserService.getInstance().validToken()) {
-            return new Promise(function(resolve, reject) {
-                resolve(null);
-            });
-        }
-        let token = UserService.getInstance().token;
-        return fetch(this.remotehost + "/api/" + token + "/event/" + eventId + "/user/" + userId, {
-            method: "POST"
-        }).then(res => res.json());
-
-    }
-
-    removeUserFromEvent(eventId, userId) {
-        if (!UserService.getInstance().validToken()) {
-            return new Promise(function(resolve, reject) {
-                resolve(null);
-            });
-        }
-        let token = UserService.getInstance().token;
-        return fetch(this.remotehost + "/api/" + token + "/event/" + eventId + "/user/" + userId, {
-            method: "DELETE"
-        }).then(res => res.json());
-
     }
 }

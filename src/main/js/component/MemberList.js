@@ -2,6 +2,7 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 
 import UserService from '../service/UserService';
+import EventService from '../service/EventService';
 
 export default class extends React.Component{
     constructor(props) {
@@ -10,6 +11,7 @@ export default class extends React.Component{
         this.state.users = props.parent.state.event.users;
 
         this.addMember = this.addMember.bind(this);
+        this.deleteMember = this.deleteMember.bind(this);
     }
 
     detectEnter(e) {
@@ -20,12 +22,18 @@ export default class extends React.Component{
 
     addMember() {
         UserService.getInstance().searchUserByHandle(this.handleFld.value).then((user) => {
-            console.log(user);
-            this.props.parent.setState((prevState, props) => {
-                prevState.
+            EventService.getInstance().addUserTOEvent(this.props.parent.state.event.eventId, user.userId).then(() => {
+                this.props.parent.getEvent(this.props.parent.state.event.eventId);
             });
         }).catch(() => {
             window.alert("User not found");
+        });
+    }
+
+    deleteMember(userId) {
+        EventService.getInstance().removeUserFromEvent(this.props.parent.state.event.eventId, userId).then((event) => {
+            console.log("making get event");
+            this.props.parent.getEvent(this.props.parent.state.event.eventId);
         });
     }
 
@@ -37,6 +45,12 @@ export default class extends React.Component{
                     return (
                     <li className="list-group-item" key={user.handle}>
                         handle: {user.handle}
+                        {true &&
+                        <div className="float-right">
+                            <i className="fa fa-close fa-2x"
+                                onClick={() => {this.deleteMember(user.userId)}}></i>
+                        </div>
+                        }
                     </li>
                     );
                 })}

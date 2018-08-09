@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 @RestController
 @CrossOrigin(
@@ -59,13 +60,48 @@ public class EventService {
             Event dbEvent = optionalEvent.get();
             for (User user : dbEvent.getUsers()) {
                 if (user.validToken(token, this.userRepository)) {
-                    event.setEventId(dbEvent.getEventId());
-                    event.setCreateTime(dbEvent.getCreateTime());
-                    return ResponseEntity.ok(this.eventRepository.save(event));
+                    dbEvent.setName(event.getName());
+                    dbEvent.setTax(event.getTax());
+                    dbEvent.setTip(event.getTip());
+                    return ResponseEntity.ok(this.eventRepository.save(dbEvent));
                 }
             }
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    }
+
+    @PostMapping("/api/{token}/event/{eventId}/user/{userId}")
+    public ResponseEntity<Event> addUserToEvent(@PathVariable Integer eventId, @PathVariable String token, @PathVariable Integer userId) {
+        Optional<Event> optionalEvent = this.eventRepository.findById(eventId);
+        if (optionalEvent.isPresent()) {
+            Event dbEvent = optionalEvent.get();
+            for (User user : dbEvent.getUsers()) {
+                if (user.validToken(token, this.userRepository)) {
+                    Optional<User> optionalUser = this.userRepository.findById(userId);
+                    if (optionalUser.isPresent()) {
+                        dbEvent.getUsers().add(optionalUser.get());
+                        return ResponseEntity.ok(this.eventRepository.save(dbEvent));
+                    }
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+                }
+            }
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    }
+
+    @DeleteMapping("/api/{token}/event/{eventId}/user/{userId}")
+    public void removeUserFromEvent(@PathVariable Integer eventId, @PathVariable String token, @PathVariable Integer userId) {
+        Optional<Event> optionalEvent = this.eventRepository.findById(eventId);
+        if (optionalEvent.isPresent()) {
+            Event dbEvent = optionalEvent.get();
+            for (User user : dbEvent.getUsers()) {
+                if (user.validToken(token, this.userRepository)) {
+                    dbEvent.getUsers().removeIf(user1 -> user1.getUserId() == userId);
+                    this.eventRepository.save(dbEvent);
+                }
+            }
+        }
+        return;
     }
 
     @DeleteMapping("/api/{token}/event/{eventId}")
