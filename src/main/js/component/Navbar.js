@@ -2,6 +2,7 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 
 import UserService from '../service/UserService';
+import EventService from '../service/EventService';
 
 export default class extends React.Component{
     constructor(props) {
@@ -10,10 +11,31 @@ export default class extends React.Component{
         this.state.user = null;
 
         this.getUser = this.getUser.bind(this);
+        this.createEvent = this.createEvent.bind(this);
+        this.detectEnter = this.detectEnter.bind(this);
     }
 
     componentDidMount() {
         this.getUser();
+    }
+
+    createEvent() {
+        EventService.getInstance().createEvent({
+            name: this.eventFld.value,
+            tax: 0,
+            tip: 0
+        }).then((event) => {
+            if (this.props.eventListener !== undefined &&
+                this.props.eventListener !== null) {
+                this.props.eventListener(event);
+            }
+        });
+    }
+
+    detectEnter(e) {
+        if (e.keyCode === 13) {
+          this.createEvent();
+        }
     }
 
     getUser() {
@@ -48,6 +70,17 @@ export default class extends React.Component{
                                 <Link to="profile" className="nav-link">Profile</Link>
                             </li>
                         </ul>
+                        <div className="form-inline my-2 my-lg-0">
+                            <div className="input-group ">
+                                <input className="form-control mr-sm-2"
+                                       type="text"
+                                       placeholder="Event Name"
+                                       onKeyDown={this.detectEnter}
+                                       ref={(fld) => {this.eventFld = fld}} />
+                                <i className="input-group-btn btn btn-primary ml-1"
+                                   onClick={this.createEvent}><i className="fa fa-plus"></i></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </nav>);

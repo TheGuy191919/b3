@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
 
@@ -26,8 +27,12 @@ public class EventService {
     public ResponseEntity<Event> insertEvent(@PathVariable String token, @RequestBody Event event) {
         User dbUser = this.userRepository.findUserByToken(token);
         if (dbUser != null && dbUser.validToken(token, this.userRepository)) {
+            if (event.getUsers() == null){
+                event.setUsers(new ArrayList<>());
+            }
             event.getUsers().add(this.userRepository.findUserByToken(token));
-            event.setCreatTime(new Date());
+            event.setCreateTime(new Date());
+            dbUser.getEvents().add(event);
             return ResponseEntity.ok(this.eventRepository.save(event));
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
@@ -55,7 +60,7 @@ public class EventService {
             for (User user : dbEvent.getUsers()) {
                 if (user.validToken(token, this.userRepository)) {
                     event.setEventId(dbEvent.getEventId());
-                    event.setCreatTime(dbEvent.getCreatTime());
+                    event.setCreateTime(dbEvent.getCreateTime());
                     return ResponseEntity.ok(this.eventRepository.save(event));
                 }
             }

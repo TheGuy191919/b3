@@ -1,7 +1,5 @@
 package io.github.cs3200.izaakyiwen.b3.model;
 
-import net.minidev.json.annotate.JsonIgnore;
-
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Date;
@@ -13,7 +11,7 @@ public class Event {
     @Column(name = "event_id")
     private int eventId;
     private String name;
-    private Date creatTime;
+    private Date createTime;
 
     @ManyToMany(mappedBy = "events", fetch = FetchType.LAZY)
     private Collection<User> users;
@@ -51,12 +49,12 @@ public class Event {
         this.name = name;
     }
 
-    public Date getCreatTime() {
-        return creatTime;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreatTime(Date creatTime) {
-        this.creatTime = creatTime;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
     public Collection<User> getUsers() {

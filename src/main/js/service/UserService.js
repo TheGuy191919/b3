@@ -86,4 +86,14 @@ export default class UserService {
         return fetch(this.remotehost + "/api/" + this.token + "/user?token=" + this.token)
                .then(res => res.json());
     }
+
+    getEventForUser() {
+        if (!this.validToken()) {
+            return new Promise(function(resolve, reject) {
+                resolve(null);
+            });
+        }
+        return fetch(this.remotehost + "/api/" + this.token + "/user/event")
+               .then(res => res.json());
+    }
 }

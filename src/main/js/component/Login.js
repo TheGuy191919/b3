@@ -24,7 +24,6 @@ export default class extends React.Component{
             if (token === null) {
                 throw "Failed to logon";
             }
-            console.log(token);
             this.setState((prevState, props) => {
                 prevState.redToProfile = true;
                 return prevState;
@@ -40,7 +39,7 @@ export default class extends React.Component{
 
     render() {
         if (this.state.redToProfile) {
-          return <Redirect to='/profile' />;
+          return <Redirect to='/' />;
         }
         return (
         <div>

@@ -1,5 +1,6 @@
 package io.github.cs3200.izaakyiwen.b3.service;
 
+import io.github.cs3200.izaakyiwen.b3.model.Event;
 import io.github.cs3200.izaakyiwen.b3.model.User;
 import io.github.cs3200.izaakyiwen.b3.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,6 +83,15 @@ public class UserService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
         return ResponseEntity.ok(user);
+    }
+
+    @GetMapping(value = "/api/{token}/user/event")
+    public ResponseEntity<Collection<Event>> findUserEvents(@PathVariable("token")String token) {
+        User user = this.userRepository.findUserByToken(token);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        return ResponseEntity.ok(user.getEvents());
     }
 
     @GetMapping(value = "/api/{token}/user", params = "token")

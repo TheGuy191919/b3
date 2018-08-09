@@ -7,6 +7,7 @@ import Home from './component/Home';
 import Register from './component/Register';
 import Login from './component/Login';
 import Profile from './component/Profile';
+import Event from './component/Event';
 
 ReactDOM.render(
     <Router>
@@ -15,6 +16,7 @@ ReactDOM.render(
             <Route path="/register" component={Register} />
             <Route path="/login" component={Login} />
             <Route path="/profile" component={Profile} />
+            <Route path="/event/:eventId" component={Event} />
         </Switch>
     </Router>,
     document.getElementById('react'));
