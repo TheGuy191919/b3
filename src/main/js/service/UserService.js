@@ -96,4 +96,14 @@ export default class UserService {
         return fetch(this.remotehost + "/api/" + this.token + "/user/event")
                .then(res => res.json());
     }
+
+    searchUserByHandle(handle) {
+        if (!this.validToken()) {
+            return new Promise(function(resolve, reject) {
+                resolve(null);
+            });
+        }
+        return fetch(this.remotehost + "/api/" + this.token + "/user?handle=" + handle)
+               .then(res => res.json());
+    }
 }

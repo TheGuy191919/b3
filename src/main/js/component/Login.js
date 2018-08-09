@@ -22,18 +22,20 @@ export default class extends React.Component{
         })
         .then(token => {
             if (token === null) {
-                throw "Failed to logon";
+                this.setState((prevState, props) => {
+                    prevState.errRegister = true;
+                    return prevState;
+                });
+                return;
+            }
+            if (this.props.eventListener !== undefined &&
+                this.props.eventListener !== null) {
+                this.props.eventListener(token);
             }
             this.setState((prevState, props) => {
                 prevState.redToProfile = true;
                 return prevState;
             })
-        })
-        .catch(err => {
-            this.setState((prevState, props) => {
-                prevState.errRegister = true;
-                return prevState;
-            });
         });
     }
 
@@ -42,8 +44,6 @@ export default class extends React.Component{
           return <Redirect to='/' />;
         }
         return (
-        <div>
-        <Navbar user={null} />
         <div className="container col-sm-3">
             <div className="text-center mb-4">
                 <h1>Login</h1>
@@ -90,7 +90,6 @@ export default class extends React.Component{
               </Link>
             </div>
           </div>
-        </div>
         </div>
         );
     }

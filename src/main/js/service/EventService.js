@@ -20,6 +20,11 @@ export default class EventService {
     }
 
     createEvent(event) {
+        if (!UserService.getInstance().validToken()) {
+            return new Promise(function(resolve, reject) {
+                resolve(null);
+            });
+        }
         let token = UserService.getInstance().token;
         return fetch(this.remotehost + "/api/" + token + "/event", {
             method: 'post',
@@ -32,6 +37,11 @@ export default class EventService {
     }
 
     deleteEvent(eventId) {
+        if (!UserService.getInstance().validToken()) {
+            return new Promise(function(resolve, reject) {
+                resolve(null);
+            });
+        }
         let token = UserService.getInstance().token;
         return fetch(this.remotehost + "/api/" + token + "/event/" + eventId,{
             method: 'DELETE'
@@ -39,6 +49,11 @@ export default class EventService {
     }
 
     putEvent(event) {
+        if (!UserService.getInstance().validToken()) {
+            return new Promise(function(resolve, reject) {
+                resolve(null);
+            });
+        }
         let token = UserService.getInstance().token;
         return fetch(this.remotehost + "/api/" + token + "/event/" + event.eventId, {
             method: 'put',
@@ -51,6 +66,11 @@ export default class EventService {
     }
 
     getEvent(eventId) {
+        if (!UserService.getInstance().validToken()) {
+            return new Promise(function(resolve, reject) {
+                resolve(null);
+            });
+        }
         let token = UserService.getInstance().token;
         return fetch(this.remotehost + "/api/" + token + "/event/" + eventId)
                .then(res => res.json());

@@ -4,6 +4,7 @@ import {Link, Redirect} from 'react-router-dom';
 import UserService from '../service/UserService';
 
 import Navbar from './Navbar.js';
+import Login from './Login';
 
 export default class extends React.Component{
     constructor(props) {
@@ -13,16 +14,12 @@ export default class extends React.Component{
         this.state.events = [];
         this.state.goToEvent = null;
 
-        this.getUser = this.getUser.bind(this);
         this.getEvents = this.getEvents.bind(this);
         this.selectEvent = this.selectEvent.bind(this);
     }
 
     componentDidMount() {
         this.getEvents();
-    }
-
-    getUser() {
     }
 
     getEvents() {
@@ -60,6 +57,7 @@ export default class extends React.Component{
                 <div className="text-center">
                     <h1>Welcome to Carve</h1>
                     <small className="">Please login</small>
+                    <Login eventListener={this.getEvents} />
                 </div>
             </div>);
         }

@@ -4,6 +4,9 @@ import {Link} from 'react-router-dom';
 import EventService from '../service/EventService';
 
 import Navbar from './Navbar.js';
+import MemberList from './MemberList.js';
+import ItemList from './ItemList.js';
+import PayerList from './PayerList.js';
 
 export default class extends React.Component{
     constructor(props) {
@@ -11,6 +14,9 @@ export default class extends React.Component{
         this.state = {};
         this.state.event = null;
         this.state.error = null;
+        this.state.status = "saved";
+
+        this.timeoutId = null;
 
         this.getEvent = this.getEvent.bind(this);
     }
@@ -32,6 +38,29 @@ export default class extends React.Component{
         });
     }
 
+    updateEvent() {
+        this.setState((prevState, props) => {
+            prevState.event = event;
+            prevState.status = "pending";
+            return prevState;
+        });
+
+        if (this.timeoutId) {
+            window.clearTimeout(this.timeoutId);
+            this.timeoutId = window.setTimeout(() => {
+                EventService.getInstance().putEvent(this.state.event).then((event) => {
+                    this.setState((prevState, props) => {
+                        prevState.event = event;
+                        prevState.status = "saved";
+                        return prevState;
+                    });
+
+                });
+            });
+        }
+
+    }
+
     render() {
         if (this.state.error) {
             return (
@@ -50,7 +79,61 @@ export default class extends React.Component{
         return (
         <div className="container">
             <Navbar />
-            {this.state.event.eventId}
+            <div>
+                <ul className="list-group">
+                    <li className="list-group-item">
+                        {this.state.event.name}(
+                        <button className="btn btn-link">
+                            {this.state.status}
+                        </button>)
+                    </li>
+                </ul>
+            </div>
+            <div id="accordion">
+              <div className="card">
+                <div className="card-header bg-transparent" id="headingOne">
+                  <h5 className="mb-0">
+                    <button className="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                      Members
+                    </button>
+                  </h5>
+                </div>
+                <div id="collapseOne" className="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                  <div className="card-body">
+                    <MemberList parent={this} />
+                  </div>
+                </div>
+              </div>
+              <div className="card">
+                <div className="card-header bg-transparent" id="headingTwo">
+                  <h5 className="mb-0">
+                    <button className="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                      Items
+                    </button>
+                  </h5>
+                </div>
+                <div id="collapseTwo" className="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                  <div className="card-body">
+                    <ItemList parent={this} />
+                  </div>
+                </div>
+              </div>
+              <div className="card">
+                <div className="card-header bg-transparent" id="headingThree">
+                  <h5 className="mb-0">
+                    <button className="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                      Payers
+                    </button>
+                  </h5>
+                </div>
+                <div id="collapseThree" className="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+                  <div className="card-body">
+                    <PayerList parent={this} />
+                  </div>
+                </div>
+              </div>
+            </div>
+            {JSON.stringify(this.state.event)}
         </div>
         );
     }
