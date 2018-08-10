@@ -3,6 +3,8 @@ import {Link, Redirect} from 'react-router-dom';
 
 import EventService from '../service/EventService';
 
+import UnitConversionUtil from '../util/UnitConversionUtil';
+
 import Navbar from './Navbar.js';
 import MemberList from './MemberList.js';
 import ItemList from './ItemList.js';
@@ -201,7 +203,7 @@ export default class extends React.Component{
                 <ul className="list-group">
                     {!this.state.editTip &&
                     <li className="list-group-item">
-                        Tip: ${this.state.event.tip}
+                        Tip: ${UnitConversionUtil.getInstance().intToStr(this.state.event.tip)}
                         <div className="float-right text-nowrap">
                            <i className="fa fa-edit fa-lg"
                               onClick={(e) => {
@@ -215,7 +217,7 @@ export default class extends React.Component{
                             <input className="form-control mr-sm-2"
                                  type="text"
                                  placeholder="Amount"
-                                 defaultValue={this.state.event.tip}
+                                 defaultValue={UnitConversionUtil.getInstance().intToStr(this.state.event.tip)}
                                  onKeyDown={this.detectEnterTip}
                                  ref={(fld) => {this.tipAmountFld = fld}} />
                             &nbsp;
@@ -225,7 +227,7 @@ export default class extends React.Component{
                     </li>}
                     {!this.state.editTax &&
                     <li className="list-group-item">
-                        Tax: ${this.state.event.tax}
+                        Tax: ${UnitConversionUtil.getInstance().intToStr(this.state.event.tax)}
                         <div className="float-right text-nowrap">
                            <i className="fa fa-edit fa-lg"
                               onClick={(e) => {
@@ -239,7 +241,7 @@ export default class extends React.Component{
                             <input className="form-control mr-sm-2"
                                  type="text"
                                  placeholder="Amount"
-                                 defaultValue={this.state.event.tax}
+                                 defaultValue={UnitConversionUtil.getInstance().intToStr(this.state.event.tax)}
                                  onKeyDown={this.detectEnterTax}
                                  ref={(fld) => {this.taxAmountFld = fld}} />
                             &nbsp;
@@ -248,9 +250,9 @@ export default class extends React.Component{
                         </div>
                     </li>}
                     <li className="list-group-item">
-                        Total: ${this.state.event.tip + this.state.event.tax + this.state.event.items.reduce((acc, item) => {
+                        Total: ${UnitConversionUtil.getInstance().intToStr(this.state.event.tip + this.state.event.tax + this.state.event.items.reduce((acc, item) => {
                             return acc + item.price;
-                        }, 0)}
+                        }, 0))}
                     </li>
                 </ul>
             </div>
