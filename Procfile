@@ -1,1 +1,1 @@
-web: java -jar target/b3-1.0-SNAPSHOT.war
+web: java -jar target/b3-1.0-SNAPSHOT.war --server.port=$PORT
