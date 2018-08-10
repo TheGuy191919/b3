@@ -1,12 +1,12 @@
 import UserService from '../service/UserService';
 
-export default class EventService {
+export default class SplitService {
 
     static myInstance = null;
 
     static getInstance() {
-        if (EventService.myInstance == null) {
-            EventService.myInstance = new EventService();
+        if (SplitService.myInstance == null) {
+            SplitService.myInstance = new SplitService();
         }
         return this.myInstance;
     }
@@ -19,86 +19,60 @@ export default class EventService {
         }
     }
 
-    createEvent(event) {
+    createSplit(itemId, split) {
         if (!UserService.getInstance().validToken()) {
             return new Promise(function(resolve, reject) {
                 resolve(null);
             });
         }
         let token = UserService.getInstance().token;
-        return fetch(this.remotehost + "/api/" + token + "/event", {
+        return fetch(this.remotehost + "/api/" + token + "/item/" + itemId + "/split", {
             method: 'post',
             headers: {
               'content-type': 'application/json'
             },
-            body: JSON.stringify(event)
+            body: JSON.stringify(split)
         })
         .then(res => res.json());
     }
 
-    deleteEvent(eventId) {
+    deleteSplit(splitId) {
         if (!UserService.getInstance().validToken()) {
             return new Promise(function(resolve, reject) {
                 resolve(null);
             });
         }
         let token = UserService.getInstance().token;
-        return fetch(this.remotehost + "/api/" + token + "/event/" + eventId,{
+        return fetch(this.remotehost + "/api/" + token + "/split/" + splitId,{
             method: 'DELETE'
-        }).then(res => res.json());
+        });
     }
 
-    putEvent(event) {
+    putSplit(split) {
         if (!UserService.getInstance().validToken()) {
             return new Promise(function(resolve, reject) {
                 resolve(null);
             });
         }
         let token = UserService.getInstance().token;
-        return fetch(this.remotehost + "/api/" + token + "/event/" + event.eventId, {
+        return fetch(this.remotehost + "/api/" + token + "/split/" + split.splitId, {
             method: 'put',
             headers: {
               'content-type': 'application/json'
             },
-            body: JSON.stringify(event)
+            body: JSON.stringify(split)
         })
         .then(res => res.json());
     }
 
-    getEvent(eventId) {
+    getSplit(splitId) {
         if (!UserService.getInstance().validToken()) {
             return new Promise(function(resolve, reject) {
                 resolve(null);
             });
         }
         let token = UserService.getInstance().token;
-        return fetch(this.remotehost + "/api/" + token + "/event/" + eventId)
+        return fetch(this.remotehost + "/api/" + token + "/split/" + splitId)
                .then(res => res.json());
-    }
-
-    addUserTOEvent(eventId, userId) {
-        if (!UserService.getInstance().validToken()) {
-            return new Promise(function(resolve, reject) {
-                resolve(null);
-            });
-        }
-        let token = UserService.getInstance().token;
-        return fetch(this.remotehost + "/api/" + token + "/event/" + eventId + "/user/" + userId, {
-            method: "POST"
-        }).then(res => res.json());
-
-    }
-
-    removeUserFromEvent(eventId, userId) {
-        if (!UserService.getInstance().validToken()) {
-            return new Promise(function(resolve, reject) {
-                resolve(null);
-            });
-        }
-        let token = UserService.getInstance().token;
-        return fetch(this.remotehost + "/api/" + token + "/event/" + eventId + "/user/" + userId, {
-            method: "DELETE"
-        });
-
     }
 }

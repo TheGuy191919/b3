@@ -69,6 +69,8 @@ export default class extends React.Component{
         });
     }
 
+    setEditTip() {}
+
     render() {
         if (this.state.error) {
             return (
@@ -122,7 +124,7 @@ export default class extends React.Component{
                 </div>
                 <div id="collapseTwo" className="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
                   <div className="card-body">
-                    <ItemList parent={this} />
+                    <ItemList parent={this} itemList={this.state.event.items}/>
                   </div>
                 </div>
               </div>
@@ -141,7 +143,33 @@ export default class extends React.Component{
                 </div>
               </div>
             </div>
-            {JSON.stringify(this.state.event)}
+            <div>
+                <ul className="list-group">
+                    <li className="list-group-item">
+                        Tip: $0
+                        <div className="float-right text-nowrap">
+                           <i className="fa fa-edit fa-lg"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                this.setEditTip(true);}}></i>
+                        </div>
+                    </li>
+                    <li className="list-group-item">
+                        Tax: $0
+                        <div className="float-right text-nowrap">
+                           <i className="fa fa-edit fa-lg"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                this.setEditTip(true);}}></i>
+                        </div>
+                    </li>
+                    <li className="list-group-item">
+                        Total: $0
+                    </li>
+                </ul>
+            </div>
+
+            {/*JSON.stringify(this.state.event)*/}
         </div>
         );
     }

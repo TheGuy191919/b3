@@ -32,7 +32,6 @@ public class SplitService {
             for (User user : item.getEvent().getUsers()) {
                 if (user.validToken(token, this.userRepository)) {
                     split.setItem(item);
-                    split.setUser(user);
                     return ResponseEntity.ok(this.splitRepository.save(split));
                 }
             }
@@ -58,13 +57,11 @@ public class SplitService {
     public ResponseEntity<Split> putSplitById(@PathVariable Integer splitId, @PathVariable String token, @RequestBody Split split) {
         Optional<Split> optionalSplit = this.splitRepository.findById(splitId);
         if (optionalSplit.isPresent()) {
-            Split dbPayer = optionalSplit.get();
-            for (User user : dbPayer.getItem().getEvent().getUsers()) {
+            Split dbSplit = optionalSplit.get();
+            for (User user : dbSplit.getItem().getEvent().getUsers()) {
                 if (user.validToken(token, this.userRepository)) {
-                    split.setSplitId(dbPayer.getSplitId());
-                    split.setUser(dbPayer.getUser());
-                    split.setItem(dbPayer.getItem());
-                    return ResponseEntity.ok(this.splitRepository.save(split));
+                    dbSplit.setWeight(split.getWeight());
+                    return ResponseEntity.ok(this.splitRepository.save(dbSplit));
                 }
             }
         }

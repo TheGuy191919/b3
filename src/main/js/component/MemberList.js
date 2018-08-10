@@ -8,10 +8,15 @@ export default class extends React.Component{
     constructor(props) {
         super(props);
         this.state = {};
-        this.state.users = props.parent.state.event.users;
+        this.state.users = this.props.memberList;
 
         this.addMember = this.addMember.bind(this);
         this.deleteMember = this.deleteMember.bind(this);
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        prevState.users = nextProps.memberList;
+        return prevState;
     }
 
     detectEnter(e) {

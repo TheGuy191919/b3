@@ -98,8 +98,10 @@ public class EventService {
                 if (user.validToken(token, this.userRepository)) {
                     dbEvent.getUsers().removeIf(user1 -> user1.getUserId() == userId);
                     this.eventRepository.save(dbEvent);
+                    return;
                 }
             }
+
         }
         return;
     }

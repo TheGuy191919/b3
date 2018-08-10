@@ -26,13 +26,11 @@ public class Event {
     private Collection<User> users;
 
     @OneToMany(mappedBy = "event",
-            cascade = CascadeType.ALL,
             orphanRemoval = true)
     private Collection<Item> items;
     private int tax;
     private int tip;
     @OneToMany(mappedBy = "event",
-            cascade = CascadeType.ALL,
             orphanRemoval = true)
     private Collection<Payer> payers;
 

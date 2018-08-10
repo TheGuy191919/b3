@@ -30,12 +30,10 @@ public class User {
     private Collection<Event> events;
     @JsonIgnore
     @OneToMany(mappedBy = "payerUser",
-            cascade = CascadeType.ALL,
             orphanRemoval = true)
     private Collection<Payment> paymentsFrom;
     @JsonIgnore
     @OneToMany(mappedBy = "payeeUser",
-            cascade = CascadeType.ALL,
             orphanRemoval = true)
     private Collection<Payment> paymentsTo;
 

@@ -61,10 +61,9 @@ public class ItemService {
             Item dbItem = optionalItem.get();
             for (User user : dbItem.getEvent().getUsers()) {
                 if (user.validToken(token, this.userRepository)) {
-                    item.setItemId(dbItem.getItemId());
-                    item.setEvent(dbItem.getEvent());
-                    item.setSplits(dbItem.getSplits());
-                    return ResponseEntity.ok(this.itemRepository.save(item));
+                    dbItem.setName(item.getName());
+                    dbItem.setPrice(item.getPrice());
+                    return ResponseEntity.ok(this.itemRepository.save(dbItem));
                 }
             }
         }

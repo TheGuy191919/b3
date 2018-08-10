@@ -18,7 +18,6 @@ public class Item {
     @JoinColumn(name = "event_id")
     private Event event;
     @OneToMany(mappedBy = "item",
-            cascade = CascadeType.ALL,
             orphanRemoval = true)
     private Collection<Split> splits;
 

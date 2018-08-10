@@ -3,13 +3,22 @@ import {Link} from 'react-router-dom';
 
 import ItemService from '../service/ItemService';
 
+import ItemRow from './ItemRow';
+
 export default class extends React.Component{
     constructor(props) {
         super(props);
         this.state = {};
-        this.state.items = props.parent.state.event.items;
+        this.state.items = props.itemList;
 
         this.addItem = this.addItem.bind(this);
+        this.updateItem = this.updateItem.bind(this);
+        this.deleteItem = this.deleteItem.bind(this);
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        prevState.items = nextProps.itemList;
+        return prevState;
     }
 
     detectEnter(e) {
@@ -19,31 +28,24 @@ export default class extends React.Component{
     }
 
     addItem() {
-        ItemService.getInstance().createItem(this.props.parent.state.event.eventId, {
+        return ItemService.getInstance().createItem(this.props.parent.state.event.eventId, {
             name: this.nameFld.value,
             price: 0,
-            splits: this.props.parent.state.event.users.map(user => {
-                return {
-                    weight: 1,
-                    user: user
-                };
-            })
+            splits: []
         }).then((item) => {
-            this.props.parent.setState((prevState, props) => {
-                prevState.status = "pending";
-                prevState.event.items.push(item);
-                return prevState;
-            });
-        })
+            this.props.parent.getEvent(this.props.parent.state.event.eventId);
+        });
+    }
+
+    updateItem(item) {
+        return ItemService.getInstance().putItem(item).then(() => {
+            this.props.parent.getEvent(this.props.parent.state.event.eventId);
+        });
     }
 
     deleteItem(item) {
-        ItemService.getInstance().deleteItem(item.itemId).then(() => {
-            this.props.parent.setState((prevState, props) => {
-                prevState.status = "pending";
-                prevState.event.items.splice(prevState.event.items.indexOf(item), 1);
-                return prevState;
-            });
+        return ItemService.getInstance().deleteItem(item.itemId).then(() => {
+            this.props.parent.getEvent(this.props.parent.state.event.eventId);
         })
     }
 
@@ -53,11 +55,9 @@ export default class extends React.Component{
             <ul className="list-group">
                 {this.state.items.map((item) => {
                     return (
-                    <li className="list-group-item" key={"" + item.eventId + ":" + item.itemId + ":"}>
-                        {item.name} : ${item.price}
-                        <i className="fa fa-close fa-2x"
-                            onClick={() => {this.deleteItem(item)}}></i>
-                    </li>
+                    <ItemRow key={"" + ":" + item.itemId + ":"}
+                             itemId={item.itemId}
+                             parent={this}/>
                     );
                 })}
                 <li className="list-group-item" key="addUser">
