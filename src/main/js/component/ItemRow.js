@@ -13,6 +13,7 @@ export default class extends React.Component{
         this.state.item = null;
         this.state.showSplit = false;
 
+        this.detectEnter = this.detectEnter.bind(this);
         this.updateItem = this.updateItem.bind(this);
         this.setEdit = this.setEdit.bind(this);
         this.getItem = this.getItem.bind(this);
@@ -20,6 +21,12 @@ export default class extends React.Component{
 
     componentDidMount() {
         this.getItem();
+    }
+
+    detectEnter(e) {
+        if (e.keyCode === 13) {
+          this.updateItem();
+        }
     }
 
     getItem() {
@@ -52,7 +59,7 @@ export default class extends React.Component{
          item.name = this.nameFld.value;
          item.price = this.priceFld.value;
          this.props.parent.updateItem(item)
-             .then(() => {this.setEdit(false);});
+             .then(() => {this.setEdit(false);this.getItem()});
     }
 
     render() {

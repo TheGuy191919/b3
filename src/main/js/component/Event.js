@@ -14,27 +14,25 @@ export default class extends React.Component{
         this.state = {};
         this.state.event = null;
         this.state.error = null;
-        this.state.status = "saved";
+        this.state.editTax = false;
+        this.state.editTip = false;
 
         this.timeoutId = null;
 
         this.getEvent = this.getEvent.bind(this);
         this.putEvent = this.putEvent.bind(this);
-        //this.updateEvent = this.updateEvent.bind(this);
+        this.setEditTip = this.setEditTip.bind(this);
+        this.setEditTax = this.setEditTax.bind(this);
+        this.detectEnterTax = this.detectEnterTax.bind(this);
+        this.detectEnterTip = this.detectEnterTip.bind(this);
+        this.updateTax = this.updateTax.bind(this);
+        this.updateTip = this.updateTip.bind(this);
     }
 
     componentDidMount() {
         this.getEvent(this.props.match.params['eventId']);
     }
-/*
-    componentDidUpdate(prevProps, prevState) {
-        this.updateEvent();
-    }
 
-    componentWillUnmount() {
-        this.putEvent();
-    }
-*/
     getEvent(eventId) {
         EventService.getInstance().getEvent(eventId)
         .then(event => {
@@ -47,29 +45,73 @@ export default class extends React.Component{
             });
         });
     }
-/*
-    updateEvent() {
-        if (this.state.status === "saved") {
-            return;
-        }
 
-        if (this.timeoutId) {
-            window.clearTimeout(this.timeoutId);
-        }
-        this.timeoutId = window.setTimeout(this.putEvent, 200);
-    }
-*/
     putEvent() {
         EventService.getInstance().putEvent(this.state.event).then((event) => {
             this.setState((prevState, props) => {
                 prevState.event = event;
-                prevState.status = "saved";
                 return prevState;
             });
         });
     }
 
-    setEditTip() {}
+    setEditTip(bool) {
+        if (this.state.editTax) {
+            return;
+        }
+        this.setState((prevState, props) => {
+            prevState.editTip = bool;
+            prevState.editTax = false;
+            return prevState;
+        });
+    }
+
+    setEditTax(bool) {
+        if (this.state.editTip) {
+            return;
+        }
+        this.setState((prevState, props) => {
+            prevState.editTip = false;
+            prevState.editTax = bool;
+            return prevState;
+        });
+    }
+
+    detectEnterTax(e) {
+        if (e.keyCode === 13) {
+          this.updateTax();
+        }
+    }
+
+    detectEnterTip(e) {
+        if (e.keyCode === 13) {
+          this.updateTip();
+        }
+    }
+
+    updateTax() {
+        var event = Object.assign({}, this.state.event);
+        event.tax = this.taxAmountFld.value;
+        EventService.getInstance().putEvent(event).then((event) => {
+            this.setState((prevState, props) => {
+                prevState.event = event;
+                prevState.editTax = false;
+                return prevState;
+            });
+        });
+    }
+
+    updateTip() {
+        var event = Object.assign({}, this.state.event);
+        event.tip = this.tipAmountFld.value;
+        EventService.getInstance().putEvent(event).then((event) => {
+            this.setState((prevState, props) => {
+                prevState.event = event;
+                prevState.editTip = false;
+                return prevState;
+            });
+        });
+    }
 
     render() {
         if (this.state.error) {
@@ -92,10 +134,7 @@ export default class extends React.Component{
             <div>
                 <ul className="list-group">
                     <li className="list-group-item">
-                        {this.state.event.name}(
-                        <button className="btn btn-link">
-                            {this.state.status}
-                        </button>)
+                        {this.state.event.name}
                     </li>
                 </ul>
             </div>
@@ -138,38 +177,69 @@ export default class extends React.Component{
                 </div>
                 <div id="collapseThree" className="collapse" aria-labelledby="headingThree" data-parent="#accordion">
                   <div className="card-body">
-                    <PayerList parent={this} />
+                    <PayerList parent={this}
+                               payerList={this.state.event.payers}/>
                   </div>
                 </div>
               </div>
             </div>
             <div>
                 <ul className="list-group">
+                    {!this.state.editTip &&
                     <li className="list-group-item">
-                        Tip: $0
+                        Tip: ${this.state.event.tip}
                         <div className="float-right text-nowrap">
                            <i className="fa fa-edit fa-lg"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 this.setEditTip(true);}}></i>
                         </div>
-                    </li>
+                    </li>}
+                    {this.state.editTip &&
                     <li className="list-group-item">
-                        Tax: $0
+                        <div className="input-group my-2 my-lg-0 text-nowrap">
+                            <input className="form-control mr-sm-2"
+                                 type="text"
+                                 placeholder="Amount"
+                                 defaultValue={this.state.event.tip}
+                                 onKeyDown={this.detectEnterTip}
+                                 ref={(fld) => {this.tipAmountFld = fld}} />
+                            &nbsp;
+                            <i className="input-group-btn btn btn-primary ml-1"
+                               onClick={this.updateTip}><i className="fa fa-check"></i></i>
+                        </div>
+                    </li>}
+                    {!this.state.editTax &&
+                    <li className="list-group-item">
+                        Tax: ${this.state.event.tax}
                         <div className="float-right text-nowrap">
                            <i className="fa fa-edit fa-lg"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                this.setEditTip(true);}}></i>
+                                this.setEditTax(true);}}></i>
                         </div>
-                    </li>
+                    </li>}
+                    {this.state.editTax &&
                     <li className="list-group-item">
-                        Total: $0
+                        <div className="input-group my-2 my-lg-0 text-nowrap">
+                            <input className="form-control mr-sm-2"
+                                 type="text"
+                                 placeholder="Amount"
+                                 defaultValue={this.state.event.tax}
+                                 onKeyDown={this.detectEnterTax}
+                                 ref={(fld) => {this.taxAmountFld = fld}} />
+                            &nbsp;
+                            <i className="input-group-btn btn btn-primary ml-1"
+                               onClick={this.updateTax}><i className="fa fa-check"></i></i>
+                        </div>
+                    </li>}
+                    <li className="list-group-item">
+                        Total: ${this.state.event.tip + this.state.event.tax + this.state.event.items.reduce((acc, item) => {
+                            return acc + item.price;
+                        }, 0)}
                     </li>
                 </ul>
             </div>
-
-            {/*JSON.stringify(this.state.event)*/}
         </div>
         );
     }

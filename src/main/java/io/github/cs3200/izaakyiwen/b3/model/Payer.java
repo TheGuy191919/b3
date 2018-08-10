@@ -13,7 +13,7 @@ public class Payer {
     private int amount;
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id")
+    @JoinColumn(name = "event_id")
     private Event event;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
