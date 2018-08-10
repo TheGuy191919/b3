@@ -10,4 +10,9 @@ public class ReactController {
     public String index() {
         return "/html/index.html";
     }
+
+    @RequestMapping("/event/*")
+    public String event() {
+        return "/html/index.html";
+    }
 }
