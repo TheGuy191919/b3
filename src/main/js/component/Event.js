@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import {Link, Redirect} from 'react-router-dom';
 
 import EventService from '../service/EventService';
 
@@ -16,6 +16,7 @@ export default class extends React.Component{
         this.state.error = null;
         this.state.editTax = false;
         this.state.editTip = false;
+        this.state.redirHome = false;
 
         this.timeoutId = null;
 
@@ -37,6 +38,10 @@ export default class extends React.Component{
         EventService.getInstance().getEvent(eventId)
         .then(event => {
             if (event === null) {
+                this.setState((prevState, props) => {
+                    prevState.redirHome = true;
+                    return prevState;
+                });
                 return;
             }
             this.setState((prevState, props) => {
@@ -114,6 +119,10 @@ export default class extends React.Component{
     }
 
     render() {
+        if (this.state.redirHome) {
+            return (
+            <Redirect to="/"/>);
+        }
         if (this.state.error) {
             return (
             <div className="container">
@@ -140,9 +149,9 @@ export default class extends React.Component{
             </div>
             <div id="accordion">
               <div className="card">
-                <div className="card-header bg-transparent" id="headingOne">
+                <div className="card-header bg-transparent" id="headingOne" data-toggle="collapse" data-target="#collapseOne">
                   <h5 className="mb-0">
-                    <button className="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <button className="btn btn-link collapsed" aria-expanded="true" aria-controls="collapseOne">
                       Members
                     </button>
                   </h5>
@@ -154,9 +163,9 @@ export default class extends React.Component{
                 </div>
               </div>
               <div className="card">
-                <div className="card-header bg-transparent" id="headingTwo">
+                <div className="card-header bg-transparent" id="headingTwo" data-toggle="collapse" data-target="#collapseTwo">
                   <h5 className="mb-0">
-                    <button className="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    <button className="btn btn-link collapsed" aria-expanded="false" aria-controls="collapseTwo">
                       Items
                     </button>
                   </h5>
@@ -168,9 +177,9 @@ export default class extends React.Component{
                 </div>
               </div>
               <div className="card">
-                <div className="card-header bg-transparent" id="headingThree">
+                <div className="card-header bg-transparent" id="headingThree" data-toggle="collapse" data-target="#collapseThree">
                   <h5 className="mb-0">
-                    <button className="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    <button className="btn btn-link collapsed" aria-expanded="false" aria-controls="collapseThree">
                       Payers
                     </button>
                   </h5>

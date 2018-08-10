@@ -53,7 +53,7 @@ export default class extends React.Component{
         if (!this.state.loggedIn) {
             return (
             <div className="container">
-                <Navbar eventListener={this.getEvents} />
+                <Navbar eventListener={this.getEvents}/>
                 <div className="text-center">
                     <h1>Welcome to Carve</h1>
                     <small className="">Please login</small>

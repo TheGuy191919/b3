@@ -15,6 +15,12 @@ export default class extends React.Component{
         this.detectEnter = this.detectEnter.bind(this);
     }
 
+    componentDidUpdate() {
+        if (this.state.user === null) {
+            this.getUser();
+        }
+    }
+
     componentDidMount() {
         this.getUser();
     }
@@ -39,8 +45,12 @@ export default class extends React.Component{
     }
 
     getUser() {
-        UserService.getInstance().currentUser()
+        return UserService.getInstance().currentUser()
         .then((user) => {
+            if ((this.state.user === null && user === null) ||
+                (this.state.user !== null && user !== null)) {
+                return;
+            }
             this.setState((prevState, props) => {
                 prevState.user = user;
                 return prevState;
