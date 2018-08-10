@@ -111,7 +111,7 @@ export default class extends React.Component{
 
     updateTax() {
         var event = Object.assign({}, this.state.event);
-        event.tax = this.taxAmountFld.value;
+        event.tax = UnitConversionUtil.getInstance().strToInt(this.taxAmountFld.value);
         EventService.getInstance().putEvent(event).then((event) => {
             this.setState((prevState, props) => {
                 prevState.event = event;
@@ -123,7 +123,7 @@ export default class extends React.Component{
 
     updateTip() {
         var event = Object.assign({}, this.state.event);
-        event.tip = this.tipAmountFld.value;
+        event.tip = UnitConversionUtil.getInstance().strToInt(this.tipAmountFld.value);
         EventService.getInstance().putEvent(event).then((event) => {
             this.setState((prevState, props) => {
                 prevState.event = event;
