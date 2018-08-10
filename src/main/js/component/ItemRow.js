@@ -3,6 +3,8 @@ import {Link} from 'react-router-dom';
 
 import ItemService from '../service/ItemService';
 
+import UnitConversionUtil from '../util/UnitConversionUtil';
+
 import SplitList from './SplitList';
 
 export default class extends React.Component{
@@ -57,7 +59,7 @@ export default class extends React.Component{
     updateItem() {
          var item = Object.assign({}, this.state.item);
          item.name = this.nameFld.value;
-         item.price = this.priceFld.value;
+         item.price = UnitConversionUtil.getInstance().strToInt(this.priceFld.value);
          this.props.parent.updateItem(item)
              .then(() => {this.setEdit(false);this.getItem()});
     }
@@ -79,7 +81,7 @@ export default class extends React.Component{
                   <input className="form-control mr-sm-2"
                          type="text"
                          placeholder="Price"
-                         defaultValue={this.state.item.price}
+                         defaultValue={UnitConversionUtil.getInstance().intToStr(this.state.item.price)}
                          onKeyDown={this.detectEnter}
                          ref={(fld) => {this.priceFld = fld}} />
                   &nbsp;
@@ -99,7 +101,7 @@ export default class extends React.Component{
                 <i className="fa fa-sort-asc fa-lg"></i>}
                 {this.state.showSplit &&
                 <i className="fa fa-sort-desc fa-lg"></i>}
-                &nbsp;&nbsp;{this.state.item.name}: ${this.state.item.price}
+                &nbsp;&nbsp;{this.state.item.name} cost ${UnitConversionUtil.getInstance().intToStr(this.state.item.price)}
                 <div className="float-right text-nowrap">
                    <i className="fa fa-edit fa-lg"
                       onClick={(e) => {

@@ -49,7 +49,7 @@ export default class extends React.Component{
                 {this.state.users.map((user) => {
                     return (
                     <li className="list-group-item" key={user.handle}>
-                        handle: {user.handle}
+                        {user.handle}
                         {true &&
                         <div className="float-right">
                             <i className="fa fa-close fa-lg"

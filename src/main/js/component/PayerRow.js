@@ -4,6 +4,8 @@ import {Link} from 'react-router-dom';
 import UserService from '../service/UserService';
 import PayerService from '../service/PayerService';
 
+import UnitConversionUtil from '../util/UnitConversionUtil';
+
 import PayerRow from './PayerRow';
 
 export default class extends React.Component{
@@ -31,7 +33,7 @@ export default class extends React.Component{
 
     updatePayer() {
          var payer = Object.assign({}, this.state.payer);
-         payer.amount = this.amountFld.value;
+         payer.amount = UnitConversionUtil.getInstance().strToInt(this.amountFld.value);
          this.props.parent.updatePayer(payer)
              .then(() => {this.setEdit(false);});
     }
@@ -51,7 +53,7 @@ export default class extends React.Component{
                   <input className="form-control mr-sm-2"
                          type="text"
                          placeholder="Amount"
-                         defaultValue={this.state.payer.amount}
+                         defaultValue={UnitConversionUtil.getInstance().intToStr(this.state.payer.amount)}
                          onKeyDown={this.detectEnter}
                          ref={(fld) => {this.amountFld = fld}} />
                   &nbsp;
@@ -63,7 +65,7 @@ export default class extends React.Component{
         }
         return (
         <li className="list-group-item" key={this.state.payer.payerId}>
-            {this.state.payer.user.handle} paid ${this.state.payer.amount}
+            {this.state.payer.user.handle} paid ${UnitConversionUtil.getInstance().intToStr(this.state.payer.amount)}
             <div className="float-right">
                 <i className="fa fa-edit fa-lg"
                    onClick={(e) => {

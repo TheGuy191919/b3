@@ -4,6 +4,8 @@ import {Link} from 'react-router-dom';
 import UserService from '../service/UserService';
 import PayerService from '../service/PayerService';
 
+import UnitConversionUtil from '../util/UnitConversionUtil';
+
 import PayerRow from './PayerRow';
 
 export default class extends React.Component{
@@ -42,7 +44,7 @@ export default class extends React.Component{
         }
         return PayerService.getInstance().createPayer(this.props.parent.state.event.eventId, {
             user: user,
-            amount: this.amountFld.value || 0
+            amount: UnitConversionUtil.getInstance().strToInt(this.amountFld.value)
         }).then((payer) => {
             this.props.parent.getEvent(this.props.parent.state.event.eventId);
         });
