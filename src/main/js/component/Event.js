@@ -60,6 +60,19 @@ export default class extends React.Component{
         });
     }
 
+    deleteEvent() {
+        if (window.prompt("To delete, type event name below", "") !== this.state.event.name) {
+            return;
+        }
+        EventService.getInstance().deleteEvent(this.state.event.eventId).then((event) => {
+        }).catch(() => {
+            this.setState((prevState, props) => {
+                prevState.redirHome = true;
+                return prevState;
+            });
+        });
+    }
+
     setEditTip(bool) {
         if (this.state.editTax) {
             return;
@@ -144,48 +157,40 @@ export default class extends React.Component{
                 <ul className="list-group">
                     <li className="list-group-item">
                         {this.state.event.name}
+                        <div className="float-right">
+                            <i className="fa fa-close fa-lg"
+                                onClick={() => {this.deleteEvent()}}></i>
+                        </div>
                     </li>
                 </ul>
             </div>
             <div id="accordion">
               <div className="card">
                 <div className="card-header bg-transparent" id="headingOne" data-toggle="collapse" data-target="#collapseOne">
-                  <h5 className="mb-0">
-                    <button className="btn btn-link collapsed" aria-expanded="true" aria-controls="collapseOne">
-                      Members
-                    </button>
-                  </h5>
+                  Members
                 </div>
                 <div id="collapseOne" className="collapse" aria-labelledby="headingOne" data-parent="#accordion">
-                  <div className="card-body">
+                  <div className="card-body p-1">
                     <MemberList parent={this} memberList={this.state.event.users}/>
                   </div>
                 </div>
               </div>
               <div className="card">
                 <div className="card-header bg-transparent" id="headingTwo" data-toggle="collapse" data-target="#collapseTwo">
-                  <h5 className="mb-0">
-                    <button className="btn btn-link collapsed" aria-expanded="false" aria-controls="collapseTwo">
-                      Items
-                    </button>
-                  </h5>
+                  Items
                 </div>
                 <div id="collapseTwo" className="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-                  <div className="card-body">
+                  <div className="card-body p-1">
                     <ItemList parent={this} itemList={this.state.event.items}/>
                   </div>
                 </div>
               </div>
               <div className="card">
                 <div className="card-header bg-transparent" id="headingThree" data-toggle="collapse" data-target="#collapseThree">
-                  <h5 className="mb-0">
-                    <button className="btn btn-link collapsed" aria-expanded="false" aria-controls="collapseThree">
-                      Payers
-                    </button>
-                  </h5>
+                  Payers
                 </div>
                 <div id="collapseThree" className="collapse" aria-labelledby="headingThree" data-parent="#accordion">
-                  <div className="card-body">
+                  <div className="card-body p-1">
                     <PayerList parent={this}
                                payerList={this.state.event.payers}/>
                   </div>

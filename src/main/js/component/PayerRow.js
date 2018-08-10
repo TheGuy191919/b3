@@ -63,7 +63,7 @@ export default class extends React.Component{
         }
         return (
         <li className="list-group-item" key={this.state.payer.payerId}>
-            handle: {this.state.payer.user.handle} : ${this.state.payer.amount}
+            {this.state.payer.user.handle} paid ${this.state.payer.amount}
             <div className="float-right">
                 <i className="fa fa-edit fa-lg"
                    onClick={(e) => {

@@ -11,6 +11,7 @@ export default class extends React.Component{
         this.state = {};
         this.state.items = props.itemList;
 
+        this.detectEnter = this.detectEnter.bind(this);
         this.addItem = this.addItem.bind(this);
         this.updateItem = this.updateItem.bind(this);
         this.deleteItem = this.deleteItem.bind(this);

@@ -14,6 +14,13 @@ export default class extends React.Component{
         this.state.redToProfile = false;
 
         this.register = this.register.bind(this);
+        this.detectEnter = this.detectEnter.bind(this);
+    }
+
+    detectEnter(e) {
+        if (e.keyCode === 13) {
+          this.register();
+        }
     }
 
     register() {
@@ -33,7 +40,6 @@ export default class extends React.Component{
             if (token === null) {
                 throw "Failed to logon";
             }
-            console.log(token);
             this.setState((prevState, props) => {
                 prevState.redToProfile = true;
                 return prevState;
@@ -105,6 +111,7 @@ export default class extends React.Component{
                          placeholder="Password Again"
                          id="passwordFld2"
                          className="form-control"
+                         onKeyDown={this.detectEnter}
                          ref={(fld) => {this.passwordFld2 = fld}}/>
                 </div>
             </div>

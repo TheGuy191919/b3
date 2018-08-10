@@ -10,7 +10,7 @@ export default class extends React.Component{
     constructor(props) {
         super(props);
         this.state = {};
-        this.state.loggedIn = false;
+        this.state.loggedIn = null;
         this.state.events = [];
         this.state.goToEvent = null;
 
@@ -49,6 +49,9 @@ export default class extends React.Component{
     render() {
         if (this.state.goToEvent) {
           return <Redirect to={'/event/' + this.state.goToEvent} />;
+        }
+        if (this.state.loggedIn === null) {
+            return null;
         }
         if (!this.state.loggedIn) {
             return (

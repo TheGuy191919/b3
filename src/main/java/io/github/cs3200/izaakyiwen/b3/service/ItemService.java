@@ -2,9 +2,11 @@ package io.github.cs3200.izaakyiwen.b3.service;
 
 import io.github.cs3200.izaakyiwen.b3.model.Event;
 import io.github.cs3200.izaakyiwen.b3.model.Item;
+import io.github.cs3200.izaakyiwen.b3.model.Split;
 import io.github.cs3200.izaakyiwen.b3.model.User;
 import io.github.cs3200.izaakyiwen.b3.repository.EventRepository;
 import io.github.cs3200.izaakyiwen.b3.repository.ItemRepository;
+import io.github.cs3200.izaakyiwen.b3.repository.SplitRepository;
 import io.github.cs3200.izaakyiwen.b3.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,8 @@ public class ItemService {
     ItemRepository itemRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    SplitRepository splitRepository;
 
     @PostMapping("/api/{token}/event/{eventId}/item")
     public ResponseEntity<Item> insertItem(@PathVariable String token, @PathVariable int eventId, @RequestBody Item item) {
@@ -33,6 +37,14 @@ public class ItemService {
             for (User user : event.getUsers()) {
                 if (user.validToken(token, this.userRepository)) {
                     item.setEvent(event);
+                    item = this.itemRepository.save(item);
+                    for (User innerUser : event.getUsers()) {
+                        Split split = new Split();
+                        split.setUser(innerUser);
+                        split.setWeight(1);
+                        split.setItem(item);
+                        this.splitRepository.save(split);
+                    }
                     return ResponseEntity.ok(this.itemRepository.save(item));
                 }
             }

@@ -52,7 +52,7 @@ export default class extends React.Component{
                         handle: {user.handle}
                         {true &&
                         <div className="float-right">
-                            <i className="fa fa-close fa-2x"
+                            <i className="fa fa-close fa-lg"
                                 onClick={() => {this.deleteMember(user.userId)}}></i>
                         </div>
                         }

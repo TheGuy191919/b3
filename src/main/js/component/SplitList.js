@@ -12,6 +12,7 @@ export default class extends React.Component{
         this.state = {};
         this.state.splits = props.splits;
 
+        this.detectEnter = this.detectEnter.bind(this);
         this.addSplit = this.addSplit.bind(this);
         this.deleteSplit = this.deleteSplit.bind(this);
         this.updateSplit = this.updateSplit.bind(this);

@@ -54,7 +54,7 @@ export default class extends React.Component{
         }
         return (
         <li className="list-group-item">
-            {this.state.split.user.handle} : Weight{this.state.split.weight}
+            {this.state.split.user.handle} : Weight {this.state.split.weight}
             <div className="float-right text-nowrap">
                <i className="fa fa-edit fa-lg"
                   onClick={(e) => {

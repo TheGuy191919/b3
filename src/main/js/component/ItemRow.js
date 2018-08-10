@@ -99,7 +99,7 @@ export default class extends React.Component{
                 <i className="fa fa-sort-asc fa-lg"></i>}
                 {this.state.showSplit &&
                 <i className="fa fa-sort-desc fa-lg"></i>}
-                {this.state.item.name} : ${this.state.item.price}
+                &nbsp;&nbsp;{this.state.item.name}: ${this.state.item.price}
                 <div className="float-right text-nowrap">
                    <i className="fa fa-edit fa-lg"
                       onClick={(e) => {
@@ -110,8 +110,10 @@ export default class extends React.Component{
                 </div>
             </div>
             {this.state.showSplit &&
-            <SplitList parent={this}
-                       splits={this.state.item.splits}/>}
+            <div className="mt-2">
+                <SplitList parent={this}
+                           splits={this.state.item.splits}/>
+            </div>}
         </li>
         );
     }

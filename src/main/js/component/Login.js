@@ -13,6 +13,13 @@ export default class extends React.Component{
         this.state.redToProfile = false;
 
         this.login = this.login.bind(this);
+        this.detectEnter = this.detectEnter.bind(this);
+    }
+
+    detectEnter(e) {
+        if (e.keyCode === 13) {
+          this.login();
+        }
     }
 
     login() {
@@ -63,6 +70,7 @@ export default class extends React.Component{
                          placeholder="handle"
                          id="handleFld"
                          className="form-control"
+                         onKeyDown={this.detectEnter}
                          ref={(fld) => {this.handleFld = fld}}/>
                 </div>
             </div>
@@ -76,6 +84,7 @@ export default class extends React.Component{
                          placeholder="Password"
                          id="passwordFld1"
                          className="form-control"
+                         onKeyDown={this.detectEnter}
                          ref={(fld) => {this.passwordFld1 = fld}}/>
                 </div>
             </div>
