@@ -1,6 +1,7 @@
 package io.github.cs3200.izaakyiwen.b3.service;
 
 import io.github.cs3200.izaakyiwen.b3.model.Event;
+import io.github.cs3200.izaakyiwen.b3.model.Payment;
 import io.github.cs3200.izaakyiwen.b3.model.User;
 import io.github.cs3200.izaakyiwen.b3.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,6 +93,24 @@ public class UserService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
         return ResponseEntity.ok(user.getEvents());
+    }
+
+    @GetMapping(value = "/api/{token}/user/payer")
+    public ResponseEntity<Collection<Payment>> findUserPayer(@PathVariable("token")String token) {
+        User user = this.userRepository.findUserByToken(token);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        return ResponseEntity.ok(user.getPaymentsFrom());
+    }
+
+    @GetMapping(value = "/api/{token}/user/payee")
+    public ResponseEntity<Collection<Payment>> findUserPayee(@PathVariable("token")String token) {
+        User user = this.userRepository.findUserByToken(token);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        return ResponseEntity.ok(user.getPaymentsTo());
     }
 
     @GetMapping(value = "/api/{token}/user", params = "token")

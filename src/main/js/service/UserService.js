@@ -97,6 +97,26 @@ export default class UserService {
                .then(res => res.json());
     }
 
+    getPayerPaymentForUser() {
+        if (!this.validToken()) {
+            return new Promise(function(resolve, reject) {
+                resolve(null);
+            });
+        }
+        return fetch(this.remotehost + "/api/" + this.token + "/user/payer")
+               .then(res => res.json());
+    }
+
+    getPayeePaymentForUser() {
+        if (!this.validToken()) {
+            return new Promise(function(resolve, reject) {
+                resolve(null);
+            });
+        }
+        return fetch(this.remotehost + "/api/" + this.token + "/user/payee")
+               .then(res => res.json());
+    }
+
     searchUserByHandle(handle) {
         if (!this.validToken()) {
             return new Promise(function(resolve, reject) {

@@ -51,9 +51,9 @@ public class PaymentService {
         if (optionalPayment.isPresent()) {
             Payment dbPayment = optionalPayment.get();
             if (dbPayment.getPayerUser().validToken(token, this.userRepository)) {
-                payment.setPaymentId(dbPayment.getPaymentId());
-                payment.setLastEditTime(new Date());
-                return ResponseEntity.ok(this.paymentRepository.save(payment));
+                dbPayment.setAmount(dbPayment.getAmount());
+                dbPayment.setLastEditTime(new Date());
+                return ResponseEntity.ok(this.paymentRepository.save(dbPayment));
             }
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);

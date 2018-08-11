@@ -1,12 +1,12 @@
 import UserService from '../service/UserService';
 
-export default class ItemService {
+export default class PaymentService {
 
     static myInstance = null;
 
     static getInstance() {
-        if (ItemService.myInstance == null) {
-            ItemService.myInstance = new ItemService();
+        if (PaymentService.myInstance == null) {
+            PaymentService.myInstance = new PaymentService();
         }
         return this.myInstance;
     }
@@ -19,60 +19,60 @@ export default class ItemService {
         }
     }
 
-    createItem(eventId, item) {
+    createPayment(payment) {
         if (!UserService.getInstance().validToken()) {
             return new Promise(function(resolve, reject) {
                 resolve(null);
             });
         }
         let token = UserService.getInstance().token;
-        return fetch(this.remotehost + "/api/" + token + "/event/" + eventId + "/item", {
+        return fetch(this.remotehost + "/api/" + token + "/payment", {
             method: 'post',
             headers: {
               'content-type': 'application/json'
             },
-            body: JSON.stringify(item)
+            body: JSON.stringify(payment)
         })
         .then(res => res.json());
     }
 
-    deleteItem(itemId) {
+    deletePayment(paymentId) {
         if (!UserService.getInstance().validToken()) {
             return new Promise(function(resolve, reject) {
                 resolve(null);
             });
         }
         let token = UserService.getInstance().token;
-        return fetch(this.remotehost + "/api/" + token + "/item/" + itemId,{
+        return fetch(this.remotehost + "/api/" + token + "/payment/" + paymentId,{
             method: 'DELETE'
         });
     }
 
-    putItem(item) {
+    putPayment(payment) {
         if (!UserService.getInstance().validToken()) {
             return new Promise(function(resolve, reject) {
                 resolve(null);
             });
         }
         let token = UserService.getInstance().token;
-        return fetch(this.remotehost + "/api/" + token + "/item/" + item.itemId, {
+        return fetch(this.remotehost + "/api/" + token + "/payment/" + payment.paymentId, {
             method: 'put',
             headers: {
               'content-type': 'application/json'
             },
-            body: JSON.stringify(item)
+            body: JSON.stringify(payment)
         })
         .then(res => res.json());
     }
 
-    getItem(itemId) {
+    getPayment(paymentId) {
         if (!UserService.getInstance().validToken()) {
             return new Promise(function(resolve, reject) {
                 resolve(null);
             });
         }
         let token = UserService.getInstance().token;
-        return fetch(this.remotehost + "/api/" + token + "/item/" + itemId)
+        return fetch(this.remotehost + "/api/" + token + "/payment/" + paymentId)
                .then(res => res.json());
     }
 }
