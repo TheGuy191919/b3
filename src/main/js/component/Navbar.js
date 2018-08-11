@@ -77,6 +77,9 @@ export default class extends React.Component{
                     <div className="collapse navbar-collapse" id="courseManagerNavFields">
                         <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
                             <li className="nav-item">
+                                <Link to="summary" className="nav-link">Summary</Link>
+                            </li>
+                            <li className="nav-item">
                                 <Link to="profile" className="nav-link">Profile</Link>
                             </li>
                         </ul>
