@@ -143,11 +143,22 @@ public class UserService {
     }
 
     @PostMapping("/api/{token}/user/logout")
-    public void logout(@RequestBody User user) {
-        Optional<User> dbUser = this.userRepository.findById(user.getUserId());
-        if (dbUser.isPresent()) {
-            dbUser.get().setTokenExpired();
-            this.userRepository.save(dbUser.get());
+    public void logout(@PathVariable("token") String token) {
+        User dbUser = this.userRepository.findUserByToken(token);
+        if (dbUser != null) {
+            dbUser.setTokenExpired();
+            this.userRepository.save(dbUser);
         }
     }
+
+    @PostMapping("/api/{token}/user/changePassword")
+    public void changePassword(@PathVariable("token")String token, @RequestBody User user) {
+        User dbUser = this.userRepository.findUserByToken(token);
+        if (dbUser != null && dbUser.validToken(token, this.userRepository)) {
+            dbUser.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
+            this.userRepository.save(dbUser);
+        }
+    }
+
+
 }
