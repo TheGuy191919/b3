@@ -107,7 +107,6 @@ public class User {
     public boolean validToken(String token, UserRepository userRepository) {
         if (!this.isTokenExpired() && this.getToken().equals(token)) {
             this.updateTokenExpiration(2592000000L);
-            System.out.println(this.getTokenExpiration());
             userRepository.save(this);
             return true;
         }
