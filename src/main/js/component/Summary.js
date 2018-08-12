@@ -105,6 +105,7 @@ export default class extends React.Component {
         this.deletePayment = this.deletePayment.bind(this);
         this.updatePayment = this.updatePayment.bind(this);
         this.calculate = this.calculate.bind(this);
+        this.detectEnter = this.detectEnter.bind(this);
     }
 
     componentDidMount() {
@@ -324,7 +325,7 @@ export default class extends React.Component {
             <Navbar eventListener={this.eventListener}/>
             <div className="">
                 <h3>Summary</h3>
-                <div className="p-2 border rounded">
+                <div className="p-2 mb-2 border rounded">
                     <h4>Add Payment</h4>
                     <div className="form-group row">
                         <label htmlFor="inputPay" className="col-sm-2 col-form-label">Pay to</label>

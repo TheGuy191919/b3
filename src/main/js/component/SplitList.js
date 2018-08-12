@@ -68,6 +68,8 @@ export default class extends React.Component{
             onClick={(e) => {
                 e.stopPropagation();
             }}>
+            {this.state.splits.length === 0 &&
+            <li className="list-group-item">Add people below</li>}
             {this.state.splits.map((split) => {
                 return (
                 <SplitRow parent={this}

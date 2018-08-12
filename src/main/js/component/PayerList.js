@@ -66,6 +66,8 @@ export default class extends React.Component{
         return (
         <div>
             <ul className="list-group">
+                {this.state.payers.length === 0 &&
+                <li className="list-group-item">Add payer below</li>}
                 {this.state.payers.map((payer) => {
                     return (
                     <PayerRow parent={this}

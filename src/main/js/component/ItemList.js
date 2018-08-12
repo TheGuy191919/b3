@@ -33,7 +33,7 @@ export default class extends React.Component{
     addItem() {
         return ItemService.getInstance().createItem(this.props.parent.state.event.eventId, {
             name: this.nameFld.value,
-            price: 0,
+            price: UnitConversionUtil.getInstance().strToInt(this.priceFld.value),
             splits: []
         }).then((item) => {
             this.props.parent.getEvent(this.props.parent.state.event.eventId);
@@ -56,6 +56,8 @@ export default class extends React.Component{
         return (
         <div>
             <ul className="list-group">
+                {this.state.items.length === 0 &&
+                <li className="list-group-item">Add item below</li>}
                 {this.state.items.map((item) => {
                     return (
                     <ItemRow key={"" + ":" + item.itemId + ":"}
@@ -70,6 +72,11 @@ export default class extends React.Component{
                                placeholder="Item Name"
                                onKeyDown={this.detectEnter}
                                ref={(fld) => {this.nameFld = fld}} />
+                        <input className="form-control mr-sm-2"
+                               type="text"
+                               placeholder="Amount"
+                               onKeyDown={this.detectEnter}
+                               ref={(fld) => {this.priceFld = fld}} />
                         <i className="input-group-btn btn btn-primary ml-1"
                            onClick={this.addItem}><i className="fa fa-plus"></i></i>
                     </div>

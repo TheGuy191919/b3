@@ -105,10 +105,12 @@ export default class extends React.Component{
                 <div className="float-right text-nowrap">
                    <i className="fa fa-edit fa-lg"
                       onClick={(e) => {
-                        e.stopPropagation();
-                        this.setEdit(true);}}></i>
+                          e.stopPropagation();
+                          this.setEdit(true);}}></i>
                    <i className="fa fa-close fa-lg"
-                      onClick={() => {this.props.parent.deleteItem(this.state.item)}}></i>
+                      onClick={(e) => {
+                          e.stopPropagation();
+                          this.props.parent.deleteItem(this.state.item)}}></i>
                 </div>
             </div>
             {this.state.showSplit &&

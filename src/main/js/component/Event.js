@@ -50,6 +50,11 @@ export default class extends React.Component{
                 prevState.event = event;
                 return prevState;
             });
+        }).catch(() => {
+            this.setState((prevState, props) => {
+                prevState.redirHome = true;
+                return prevState;
+            });
         });
     }
 
