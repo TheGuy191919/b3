@@ -1,3 +1,5 @@
+import cookie from 'react-cookies';
+
 export default class UserService {
 
     static myInstance = null;
@@ -10,8 +12,10 @@ export default class UserService {
     }
 
     constructor() {
-        this.token = null;
+        this.token = cookie.load('token') || null;
         this.tokenDate = null;
+        this.user = null;
+        this.userDate = null;
         this.remotehost = "";
         if (window.location.port === "3000" ||
             window.location.port === "8081") {
@@ -33,6 +37,7 @@ export default class UserService {
                 return null;
             }
             this.token = token;
+            cookie.save('token', token, {path: "/"});
             this.tokenDate = new Date();
             return token;
         });
@@ -52,8 +57,39 @@ export default class UserService {
                 return null;
             }
             this.token = token;
+            cookie.save('token', token, {path: "/"});
             this.tokenDate = new Date();
             return token;
+        });
+    }
+
+    logout() {
+        if (!this.validToken()) {
+            return new Promise(function(resolve, reject) {
+                resolve(null);
+            });
+        }
+        return fetch(this.remotehost + "/api/" + this.token + "/user/logout", {
+            method: 'post'
+        }).then(() => {
+            this.token = null;
+            this.user = null;
+            cookie.remove('token', {path: "/"});
+        });
+    }
+
+    changePassword(user) {
+        if (!this.validToken()) {
+            return new Promise(function(resolve, reject) {
+                resolve(null);
+            });
+        }
+        return fetch(this.remotehost + "/api/" + this.token + "/user/changePassword", {
+            method: 'post',
+            headers: {
+              'content-type': 'application/json'
+            },
+            body: JSON.stringify(user)
         });
     }
 
@@ -74,7 +110,11 @@ export default class UserService {
             },
             body: JSON.stringify(user)
         })
-        .then(res => res.json());
+        .then(res => res.json()).then((user) => {
+            this.user = user;
+            this.userDate = Date.now();
+            return user;
+        });
     }
 
     currentUser() {
@@ -83,8 +123,17 @@ export default class UserService {
                 resolve(null);
             });
         }
+        if (this.user !== null && this.userDate + 600000 > Date.now()) {
+            return new Promise((resolve, reject) => {
+                resolve(this.user);
+            });
+        }
         return fetch(this.remotehost + "/api/" + this.token + "/user?token=" + this.token)
-               .then(res => res.json());
+            .then(res => res.json()).catch(() => {return null;}).then((user) => {
+                this.user = user;
+                this.userDate = Date.now();
+                return user;
+            });
     }
 
     getEventForUser() {
