@@ -24,10 +24,10 @@ class PaymentRow extends React.Component {
 
     render() {
         if (this.state.user.handle === this.state.payment.payeeUser.handle) {
-            return (<li className="list-group-item">{this.state.payment.payerUser.handle} paid us {UnitConversionUtil.getInstance().intToStr(this.state.payment.amount)} on {new Date(this.state.payment.lastEditTime.split('.')[0] + "Z").toLocaleString()}</li>);
+            return (<li className="list-group-item">{this.state.payment.payerUser.handle} paid us {UnitConversionUtil.getInstance().intToStr(this.state.payment.amount)} on {new Date(this.state.payment.lastEditTime.split('.')[0] + "Z").toLocaleString(undefined, {month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit", hour12:false})}</li>);
         }
         return (
-        <li className="list-group-item">Paid {UnitConversionUtil.getInstance().intToStr(this.state.payment.amount)} to {this.state.payment.payeeUser.handle} on {new Date(this.state.payment.lastEditTime.split('.')[0] + "Z").toLocaleString()}
+        <li className="list-group-item">Paid {UnitConversionUtil.getInstance().intToStr(this.state.payment.amount)} to {this.state.payment.payeeUser.handle} on {new Date(this.state.payment.lastEditTime.split('.')[0] + "Z").toLocaleString(undefined, {month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit", hour12:false})}
             <div className="float-right text-nowrap">
                <i className="fa fa-close fa-lg"
                   onClick={() => {this.props.parent.deletePayment(this.state.payment.paymentId)}}></i>
@@ -60,7 +60,6 @@ class EventSummary extends React.Component {
                 }
             }
         }
-
         return state;
     }
 
@@ -68,9 +67,12 @@ class EventSummary extends React.Component {
         let event = this.state.event;
         return (
         <li className="list-group-item">
-            <h4>{this.state.event.name}</h4>
+            <h4><Link to={"/event/" + event.eventId}>{this.state.event.name}</Link></h4>
             <small>Created: {new Date(this.state.event.createTime.split('.')[0] + "Z").toLocaleString()}</small>
             <ul className="list-group">
+                {(this.state.statements.length === 0) &&
+                <p>Nothing here, add items and payments to events to get started</p>
+                }
                 {this.state.statements.map((statement) => {
                     return (<li className="list-group-item"
                                 key={statement}>{statement}</li>);
