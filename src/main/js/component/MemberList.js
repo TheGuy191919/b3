@@ -9,9 +9,26 @@ export default class extends React.Component{
         super(props);
         this.state = {};
         this.state.users = this.props.memberList;
+        this.state.user = null;
 
         this.addMember = this.addMember.bind(this);
         this.deleteMember = this.deleteMember.bind(this);
+        this.getUser = this.getUser.bind(this);
+        this.detectEnter = this.detectEnter.bind(this);
+    }
+
+    componentDidMount() {
+        this.getUser();
+    }
+
+    getUser() {
+        UserService.getInstance().currentUser()
+        .then((user) => {
+            this.setState((prevState, props) => {
+                prevState.user = user;
+                return prevState;
+            })
+        });
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -36,8 +53,17 @@ export default class extends React.Component{
     }
 
     deleteMember(userId) {
+        if (this.state.user.userId === userId) {
+            EventService.getInstance().deleteEvent(this.props.parent.state.event.eventId).then((event) => {
+            }).catch(() => {
+                this.props.parent.setState((prevState, props) => {
+                    prevState.redirHome = true;
+                    return prevState;
+                });
+            });
+            return;
+        }
         EventService.getInstance().removeUserFromEvent(this.props.parent.state.event.eventId, userId).then((event) => {
-            console.log("making get event");
             this.props.parent.getEvent(this.props.parent.state.event.eventId);
         });
     }

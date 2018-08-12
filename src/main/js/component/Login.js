@@ -57,7 +57,7 @@ export default class extends React.Component{
             </div>
             {this.state.errRegister &&
             <div className="alert alert-warning">
-                <strong>Warning!</strong> Cannot Register.
+                <strong>Warning!</strong> Cannot Login.
             </div>
             }
         	<div className="form-horizontal">

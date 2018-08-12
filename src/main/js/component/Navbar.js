@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import {Link, Redirect} from 'react-router-dom';
 
 import UserService from '../service/UserService';
 import EventService from '../service/EventService';
@@ -9,6 +9,11 @@ export default class extends React.Component{
         super(props);
         this.state = {};
         this.state.user = null;
+        this.state.shouldRedir = props.shouldRedir;
+        if (this.state.shouldRedir === undefined || this.state.shouldRedir === null) {
+            this.state.shouldRedir = true;
+        }
+        this.state.redir = null;
 
         this.getUser = this.getUser.bind(this);
         this.createEvent = this.createEvent.bind(this);
@@ -34,6 +39,12 @@ export default class extends React.Component{
             if (this.props.eventListener !== undefined &&
                 this.props.eventListener !== null) {
                 this.props.eventListener(event);
+                if (this.state.shouldRedir) {
+                    this.setState((prevState, props) => {
+                        prevState.redir = "/";
+                        return prevState;
+                    });
+                }
             }
         });
     }
@@ -59,6 +70,9 @@ export default class extends React.Component{
     }
 
     render() {
+        if (this.state.redir) {
+            return <Redirect to={this.state.redir}/>;
+        }
         if (this.state.user) {
             return (
             <nav className="navbar navbar-expand-lg navbar-light
@@ -77,10 +91,10 @@ export default class extends React.Component{
                     <div className="collapse navbar-collapse" id="courseManagerNavFields">
                         <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
                             <li className="nav-item">
-                                <Link to="summary" className="nav-link">Summary</Link>
+                                <Link to="/summary" className="nav-link">Summary</Link>
                             </li>
                             <li className="nav-item">
-                                <Link to="profile" className="nav-link">Profile</Link>
+                                <Link to="/profile" className="nav-link">Profile</Link>
                             </li>
                         </ul>
                         <div className="form-inline my-2 my-lg-0">

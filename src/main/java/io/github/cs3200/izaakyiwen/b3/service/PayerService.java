@@ -32,7 +32,6 @@ public class PayerService {
             for (User user : event.getUsers()) {
                 if (user.validToken(token, this.userRepository)) {
                     payer.setEvent(event);
-                    payer.setUser(user);
                     return ResponseEntity.ok(this.payerRepository.save(payer));
                 }
             }

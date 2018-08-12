@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import {Link, Redirect} from 'react-router-dom';
 
 import UserService from '../service/UserService';
 
@@ -11,18 +11,32 @@ export default class extends React.Component {
         this.state = {};
         this.state.user = null;
         this.state.errUpdate = false;
+        this.state.redir = null;
 
         this.getUser = this.getUser.bind(this);
         this.logout = this.logout.bind(this);
         this.updateUser = this.updateUser.bind(this);
+        this.detectEnter = this.detectEnter.bind(this);
+        this.changePassword = this.changePassword.bind(this);
     }
 
     componentDidMount() {
         this.getUser();
     }
 
-    logout() {
+    detectEnter(e) {
+        if (e.keyCode === 13) {
+          this.login();
+        }
+    }
 
+    logout() {
+        UserService.getInstance().logout().then(() => {
+            this.setState((prevState) => {
+                prevState.redir = "/";
+                return prevState;
+            });
+        })
     }
 
     getUser() {
@@ -59,7 +73,21 @@ export default class extends React.Component {
         });
     }
 
+    changePassword() {
+        UserService.getInstance().changePassword({
+            password: this.passwordFld.value,
+            userId: this.state.user.userId
+        })
+        .then(() => {
+            window.alert("Password changed");
+        });
+
+    }
+
     render() {
+        if (this.state.redir) {
+            return <Redirect to={this.state.redir} />
+        }
         if (this.state.user === null) {
             return <div><Navbar /></div>;
         }
@@ -106,25 +134,11 @@ export default class extends React.Component {
                 </div>
 
                 <div className="form-group">
-                    <label className="control-label" htmlFor="passwordFld">
-                        Password
-                    </label>
-                    <div className="">
-                      <input type="password"
-                             placeholder="password"
-                             id="passwordFld"
-                             className="form-control"
-                             ref={(fld) => {this.passwordFld = fld}}
-                             readOnly/>
-                    </div>
-                </div>
-
-                <div className="form-group">
                     <label className="control-label" htmlFor="emailFld">
                         Email
                     </label>
                     <div className="">
-                      <input type="text"
+                      <input type="email"
                              placeholder="Email"
                              id="emailFld"
                              className="form-control"
@@ -136,8 +150,30 @@ export default class extends React.Component {
                   <button id="updateBtn"
                           className="btn btn-lg btn-danger btn-block"
                           onClick={this.updateUser}>
-                      Update
+                      Update profile
                   </button>
+
+                    <div className="mt-2 form-group">
+                        <label className="control-label" htmlFor="passwordFld">
+                            Password
+                        </label>
+                        <div className="input-group">
+                            <input type="password"
+                                   placeholder="password"
+                                   id="passwordFld"
+                                   className="form-control"
+                                   onKeyDown={this.detectEnter}
+                                   ref={(fld) => {this.passwordFld = fld}}/>
+                            <span className="input-group-btn">
+                                <button id="updatePassBtn"
+                                        className="btn btn-danger ml-2"
+                                        onClick={this.changePassword}>
+                                    Change
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+
                   <button id="logoutBtn"
                           className="btn btn-lg btn-warning btn-block"
                           onClick={this.logout}>
