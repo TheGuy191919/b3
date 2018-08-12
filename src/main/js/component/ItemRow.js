@@ -98,9 +98,9 @@ export default class extends React.Component{
                 this.setShowSplit(!this.state.showSplit);
             }}>
                 {!this.state.showSplit &&
-                <i className="fa fa-sort-asc fa-lg"></i>}
+                <i className="fa fa-caret-up fa-lg"></i>}
                 {this.state.showSplit &&
-                <i className="fa fa-sort-desc fa-lg"></i>}
+                <i className="fa fa-caret-down fa-lg"></i>}
                 &nbsp;&nbsp;{this.state.item.name} cost ${UnitConversionUtil.getInstance().intToStr(this.state.item.price)}
                 <div className="float-right text-nowrap">
                    <i className="fa fa-edit fa-lg"
