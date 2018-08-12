@@ -29,7 +29,7 @@ export default class UnitConversionUtil {
     }
 
     intToStr(int) {
-        let desPart = ("" + (int % 100)).padStart(2, "0");
+        let desPart = ("" + parseInt(int % 100)).padStart(2, "0");
         if (int < 0) {
             return "-" + Math.floor(int / 100) + "." + desPart;
         }
