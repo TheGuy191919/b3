@@ -1,6 +1,7 @@
 package io.github.cs3200.izaakyiwen.b3.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.cs3200.izaakyiwen.b3.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
@@ -12,8 +13,6 @@ import java.util.UUID;
 
 @Entity
 public class User {
-    private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    private static SecureRandom rnd = new SecureRandom();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +20,7 @@ public class User {
     private int userId;
     private String name;
     private String email;
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     @Column(unique = true)
     private String handle;
@@ -85,7 +84,7 @@ public class User {
      *
      * @return true if current token is expired.
      */
-    private boolean isTokenExpired() {
+    public boolean isTokenExpired() {
         return new Date().after(new Date(this.getTokenExpiration()));
     }
 
@@ -99,7 +98,7 @@ public class User {
     }
 
     /**
-     * Check if the given token is valid. Make sure it has at least 10 minutes
+     * Check if the given token is valid. Make sure it has at least 30 days
      * before expiring.
      *
      * @param token String to check if it is a valid token.
@@ -107,7 +106,8 @@ public class User {
      */
     public boolean validToken(String token, UserRepository userRepository) {
         if (!this.isTokenExpired() && this.getToken().equals(token)) {
-            this.updateTokenExpiration(600000);
+            this.updateTokenExpiration(2592000000L);
+            System.out.println(this.getTokenExpiration());
             userRepository.save(this);
             return true;
         }
