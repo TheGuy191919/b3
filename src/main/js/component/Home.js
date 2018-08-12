@@ -31,6 +31,9 @@ export default class extends React.Component{
                 });
                 return;
             }
+            events.sort((first, second) => {
+                return new Date(second.createTime.split('.')[0] + "Z") - new Date(first.createTime.split('.')[0] + "Z");
+            });
             this.setState((prevState, props) => {
                 prevState.events = events;
                 prevState.loggedIn = true;
@@ -81,9 +84,9 @@ export default class extends React.Component{
                         <div className="col">
                             {event.name}
                         </div>
-                        <div className="col-3 col-md-6 float-right">
+                        <div className="col-6 col-md-3 float-right">
                             <span className="float-right">
-                                {new Date(event.createTime.split('.')[0] + "Z").toLocaleString()}
+                                {new Date(event.createTime.split('.')[0] + "Z").toLocaleString(undefined, {month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit", hour12:false})}
                             </span>
                         </div>
                     </div>
