@@ -89,7 +89,7 @@ export default class extends React.Component{
                     <div className="input-group ">
                         <input className="form-control mr-sm-2"
                                type="text"
-                               placeholder="Event Name"
+                               placeholder="Handle"
                                onKeyDown={this.detectEnter}
                                ref={(fld) => {this.handleFld = fld}} />
                         <i className="input-group-btn btn btn-primary ml-1"
