@@ -263,10 +263,16 @@ export default class extends React.Component {
                     return acc + split.weight;
                 }, 0);
                 item.splits.forEach((split) => {
+                    if (totalWeight == 0) {
+                      return;
+                    }
                     totalOwing[split.user.handle] = totalOwing[split.user.handle] + item.price * split.weight / totalWeight;
                 });
             });
             event.users.forEach((user) => {
+                if (totalPreTax == 0) {
+                  return;
+                }
                 totalOwing[user.handle] = totalOwing[user.handle] + (event.tip + event.tax) * totalOwing[user.handle] / totalPreTax;
             });
             let totalPaid = event.payers.reduce((acc, payer) => {return acc + payer.amount}, 0);
@@ -275,15 +281,12 @@ export default class extends React.Component {
             event.users.forEach((user) => {
                 totalOwingToPayer[user.handle] = {};
                 event.payers.forEach((payer) => {
+                    if (totalPaid == 0) {
+                      return;
+                    }
                     totalOwingToPayer[user.handle][payer.user.handle] = totalOwing[user.handle] * payer.amount / totalPaid;
                 });
             });
-            /*event.payers.forEach((payer) => {
-                totalOwingToPayer[payer.user.handle] = {};
-                event.users.forEach((user) => {
-                    totalOwingToPayer[payer.user.handle][user.handle] = totalOwing[user.handle] * payer.amount / totalPaid;
-                });
-            });*/
             return totalOwingToPayer;
         });
         //How much this user owe to other users
