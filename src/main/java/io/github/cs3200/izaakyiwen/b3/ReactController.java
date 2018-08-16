@@ -15,4 +15,9 @@ public class ReactController {
     public String event() {
         return "/html/index.html";
     }
+
+    @RequestMapping("/icon.png")
+    public String icon() {
+        return "/html/icon.png";
+    }
 }
