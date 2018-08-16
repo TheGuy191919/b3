@@ -13,6 +13,12 @@ export default class UserService {
 
     constructor() {
         this.token = cookie.load('token') || null;
+        let date = cookie.load('token_time') || 0;
+        if (parseInt(date) + Math.min(Number.MAX_SAFE_INTEGER,2500000000) < Date.now()) {
+          this.token = null;
+          cookie.remove('token', {path: "/"});
+          cookie.remove('token_time', {path: "/"});
+        }
         this.tokenDate = null;
         this.user = null;
         this.userDate = null;
@@ -38,6 +44,7 @@ export default class UserService {
             }
             this.token = token;
             cookie.save('token', token, {path: "/"});
+            cookie.save('token_time', Date.now(), {path: "/"});
             this.tokenDate = new Date();
             return token;
         });
@@ -58,6 +65,7 @@ export default class UserService {
             }
             this.token = token;
             cookie.save('token', token, {path: "/"});
+            cookie.save('token_time', Date.now(), {path: "/"});
             this.tokenDate = new Date();
             return token;
         });
@@ -75,6 +83,7 @@ export default class UserService {
             this.token = null;
             this.user = null;
             cookie.remove('token', {path: "/"});
+            cookie.remove('token_time', {path: "/"});
         });
     }
 

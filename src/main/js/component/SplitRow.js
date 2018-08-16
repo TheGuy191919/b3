@@ -10,6 +10,7 @@ export default class extends React.Component{
         this.state.edit = false;
         this.state.split = props.split;
 
+        this.detectEnter = this.detectEnter.bind(this);
         this.setEdit = this.setEdit.bind(this);
         this.updateSplit = this.updateSplit.bind(this);
     }
@@ -17,6 +18,12 @@ export default class extends React.Component{
     static getDerivedStateFromProps(nextProps, prevState) {
         prevState.split = nextProps.split;
         return prevState;
+    }
+
+    detectEnter(e) {
+        if (e.keyCode === 13) {
+          this.updateSplit();
+        }
     }
 
     setEdit(bool) {
@@ -39,7 +46,7 @@ export default class extends React.Component{
             <li className="list-group-item">
                 <div className="input-group my-2 my-lg-0 text-nowrap">
                   {this.state.split.user.handle}
-                  <input className="form-control mr-sm-2"
+                  <input className="form-control ml-sm-2"
                          type="text"
                          placeholder="Name"
                          defaultValue={this.state.split.weight}
