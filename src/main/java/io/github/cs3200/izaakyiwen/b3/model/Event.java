@@ -3,6 +3,7 @@ package io.github.cs3200.izaakyiwen.b3.model;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 public class Event {
@@ -23,16 +24,16 @@ public class Event {
             )
     )
     @ManyToMany(fetch = FetchType.LAZY)
-    private Collection<User> users;
+    private Set<User> users;
 
     @OneToMany(mappedBy = "event",
             orphanRemoval = true)
-    private Collection<Item> items;
+    private Set<Item> items;
     private int tax;
     private int tip;
     @OneToMany(mappedBy = "event",
             orphanRemoval = true)
-    private Collection<Payer> payers;
+    private Set<Payer> payers;
 
     public int getEventId() {
         return eventId;
@@ -58,19 +59,19 @@ public class Event {
         this.createTime = createTime;
     }
 
-    public Collection<User> getUsers() {
+    public Set<User> getUsers() {
         return users;
     }
 
-    public void setUsers(Collection<User> users) {
+    public void setUsers(Set<User> users) {
         this.users = users;
     }
 
-    public Collection<Item> getItems() {
+    public Set<Item> getItems() {
         return items;
     }
 
-    public void setItems(Collection<Item> items) {
+    public void setItems(Set<Item> items) {
         this.items = items;
     }
 
@@ -90,11 +91,11 @@ public class Event {
         this.tip = tip;
     }
 
-    public Collection<Payer> getPayers() {
+    public Set<Payer> getPayers() {
         return payers;
     }
 
-    public void setPayers(Collection<Payer> payers) {
+    public void setPayers(Set<Payer> payers) {
         this.payers = payers;
     }
 }

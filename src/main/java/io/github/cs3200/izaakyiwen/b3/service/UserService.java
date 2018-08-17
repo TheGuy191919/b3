@@ -160,5 +160,12 @@ public class UserService {
         }
     }
 
-
+    @GetMapping("/api/{token}/user/suggestion")
+    public ResponseEntity<Collection<User>> getSuggestions(@PathVariable("token") String token) {
+        User dbUser = this.userRepository.findUserByToken(token);
+        if (dbUser != null && dbUser.validToken(token, this.userRepository)) {
+            return ResponseEntity.ok(this.userRepository.suggestUser(dbUser.getUserId()));
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    }
 }

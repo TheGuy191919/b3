@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.security.SecureRandom;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -26,15 +27,15 @@ public class User {
     private String handle;
     @JsonIgnore
     @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
-    private Collection<Event> events;
+    private Set<Event> events;
     @JsonIgnore
     @OneToMany(mappedBy = "payerUser",
             orphanRemoval = true)
-    private Collection<Payment> paymentsFrom;
+    private Set<Payment> paymentsFrom;
     @JsonIgnore
     @OneToMany(mappedBy = "payeeUser",
             orphanRemoval = true)
-    private Collection<Payment> paymentsTo;
+    private Set<Payment> paymentsTo;
 
     @JsonIgnore
     private String token;
@@ -153,11 +154,11 @@ public class User {
         this.handle = handle;
     }
 
-    public Collection<Event> getEvents() {
+    public Set<Event> getEvents() {
         return events;
     }
 
-    public void setEvents(Collection<Event> events) {
+    public void setEvents(Set<Event> events) {
         this.events = events;
     }
 
@@ -177,19 +178,19 @@ public class User {
         this.tokenExpiration = tokenExpiration;
     }
 
-    public Collection<Payment> getPaymentsFrom() {
+    public Set<Payment> getPaymentsFrom() {
         return paymentsFrom;
     }
 
-    public void setPaymentsFrom(Collection<Payment> paymentsFrom) {
+    public void setPaymentsFrom(Set<Payment> paymentsFrom) {
         this.paymentsFrom = paymentsFrom;
     }
 
-    public Collection<Payment> getPaymentsTo() {
+    public Set<Payment> getPaymentsTo() {
         return paymentsTo;
     }
 
-    public void setPaymentsTo(Collection<Payment> paymentsTo) {
+    public void setPaymentsTo(Set<Payment> paymentsTo) {
         this.paymentsTo = paymentsTo;
     }
 }
