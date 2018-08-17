@@ -69,6 +69,9 @@ export default class extends React.Component{
     }
 
     deleteMember(userId) {
+        if (!window.confirm("In order to successfully delete a user, they cannot be payer nor can they have any part in any item.")) {
+            return;
+        }
         if (this.state.user.userId === userId && this.state.users.length === 1) {
             EventService.getInstance().deleteEvent(this.props.parent.state.event.eventId).then((event) => {
             }).catch(() => {
@@ -147,6 +150,8 @@ export default class extends React.Component{
                     </li>
                     );
                 })}
+                {this.state.showSuggestion &&
+                <li className="list-group-item"><p>Users that have been in events with you in the past will show up here.</p></li>}
             </ul>
         </div>
         );
