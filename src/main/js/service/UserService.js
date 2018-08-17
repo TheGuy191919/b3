@@ -184,4 +184,14 @@ export default class UserService {
         return fetch(this.remotehost + "/api/" + this.token + "/user?handle=" + handle)
                .then(res => res.json());
     }
+
+    getSuggestion() {
+        if (!this.validToken()) {
+            return new Promise(function(resolve, reject) {
+                resolve(null);
+            });
+        }
+        return fetch(this.remotehost + "/api/" + this.token + "/user/suggestion")
+               .then(res => res.json());
+    }
 }

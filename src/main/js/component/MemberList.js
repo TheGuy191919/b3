@@ -10,15 +10,31 @@ export default class extends React.Component{
         this.state = {};
         this.state.users = this.props.memberList;
         this.state.user = null;
+        this.state.showSuggestion = false;
+        this.state.suggestedUsers = [];
 
         this.addMember = this.addMember.bind(this);
         this.deleteMember = this.deleteMember.bind(this);
         this.getUser = this.getUser.bind(this);
         this.detectEnter = this.detectEnter.bind(this);
+        this.getSuggestion = this.getSuggestion.bind(this);
+        this.toggleSS = this.toggleSS.bind(this);
+        this.fillHandle = this.fillHandle.bind(this);
     }
 
     componentDidMount() {
         this.getUser();
+        this.getSuggestion();
+    }
+
+    getSuggestion() {
+        UserService.getInstance().getSuggestion()
+        .then((suggestedUsers) => {
+            this.setState((prevState, props) => {
+                prevState.suggestedUsers = suggestedUsers;
+                return prevState;
+            })
+        });
     }
 
     getUser() {
@@ -53,7 +69,10 @@ export default class extends React.Component{
     }
 
     deleteMember(userId) {
-        if (this.state.user.userId === userId) {
+        if (!window.confirm("In order to successfully delete a user, they cannot be payer nor can they have any part in any item.")) {
+            return;
+        }
+        if (this.state.user.userId === userId && this.state.users.length === 1) {
             EventService.getInstance().deleteEvent(this.props.parent.state.event.eventId).then((event) => {
             }).catch(() => {
                 this.props.parent.setState((prevState, props) => {
@@ -66,6 +85,17 @@ export default class extends React.Component{
         EventService.getInstance().removeUserFromEvent(this.props.parent.state.event.eventId, userId).then((event) => {
             this.props.parent.getEvent(this.props.parent.state.event.eventId);
         });
+    }
+
+    toggleSS() {
+        this.setState((prevState, props) => {
+            prevState.showSuggestion = !prevState.showSuggestion;
+            return prevState;
+        });
+    }
+
+    fillHandle(str) {
+        this.handleFld.value = str;
     }
 
     render() {
@@ -87,6 +117,12 @@ export default class extends React.Component{
                 })}
                 <li className="list-group-item" key="addUser">
                     <div className="input-group ">
+                        {!this.state.showSuggestion &&
+                        <i className="fa fa-caret-up fa-lg pr-4"
+                           onClick={this.toggleSS}></i>}
+                        {this.state.showSuggestion &&
+                        <i className="fa fa-caret-down fa-lg pr-4"
+                           onClick={this.toggleSS}></i>}
                         <input className="form-control mr-sm-2"
                                type="text"
                                placeholder="Handle"
@@ -96,6 +132,26 @@ export default class extends React.Component{
                            onClick={this.addMember}><i className="fa fa-plus"></i></i>
                     </div>
                 </li>
+                {this.state.showSuggestion &&
+                <li className="list-group-item"><h4>Suggestions</h4></li>}
+                {this.state.showSuggestion &&
+                this.state.suggestedUsers.filter((sUser) => {
+                    if (this.state.users.find((existUser) => {
+                        return existUser.userId === sUser.userId;
+                    }) === undefined) {
+                        return true;
+                    }
+                    return false;
+                }).map((sUser) => {
+                    return (
+                    <li className="list-group-item"
+                        onClick={() => {this.fillHandle(sUser.handle)}}>
+                    {sUser.handle}
+                    </li>
+                    );
+                })}
+                {this.state.showSuggestion &&
+                <li className="list-group-item"><p>Users that have been in events with you in the past will show up here.</p></li>}
             </ul>
         </div>
         );

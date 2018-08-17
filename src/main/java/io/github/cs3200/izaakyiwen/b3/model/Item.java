@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Set;
 
 @Entity
 public class Item {
@@ -19,7 +20,7 @@ public class Item {
     private Event event;
     @OneToMany(mappedBy = "item",
             orphanRemoval = true)
-    private Collection<Split> splits;
+    private Set<Split> splits;
 
     public int getItemId() {
         return itemId;
@@ -45,11 +46,11 @@ public class Item {
         this.event = event;
     }
 
-    public Collection<Split> getSplits() {
+    public Set<Split> getSplits() {
         return splits;
     }
 
-    public void setSplits(Collection<Split> splits) {
+    public void setSplits(Set<Split> splits) {
         this.splits = splits;
     }
 
